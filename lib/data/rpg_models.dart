@@ -19,3 +19,10 @@ class OpstinaRow {
   final int totalRegistered;
   final int totalActive;
 }
+
+/// National totals for one snapshot (sum of all opštine).
+class NationalTotals {
+  const NationalTotals({required this.registered, required this.active});
+  final int registered;
+  final int active;
+}
