@@ -1,16 +1,16 @@
 # RPG app — design and spec
 
-Design and product specification for the Flutter mobile app that surfaces Serbia's RPG (Registar poljoprivrednih gazdinstava) open data.
+Design and product specification for the Flutter app (mobile and web) that surfaces Serbia's RPG (Registar poljoprivrednih gazdinstava) open data.
 
 ---
 
 ## 1. Product overview and goals
 
 **What we're building**  
-A production-ready Flutter mobile app that surfaces Serbia's RPG open data: number of registered and active agricultural holdings by municipality (opština). Data comes from the [data.gov.rs RPG dataset](https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/) (Uprava za agrarna plaćanja), published as quarterly CSV snapshots (e.g. 31.12.2025, 07.07.2025). The app is **Serbian, Latin only**, and **online-only** for v1 (no offline cache).
+A production-ready Flutter app for **mobile and web** that surfaces Serbia's RPG open data: number of registered and active agricultural holdings by municipality (opština). Same codebase, one UI: mobile-first and responsive for desktop browsers. Data comes from the [data.gov.rs RPG dataset](https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/) (Uprava za agrarna plaćanja), published as quarterly CSV snapshots (e.g. 31.12.2025, 07.07.2025). The app is **Serbian, Latin only**, and **online-only** for v1 (no offline cache).
 
 **Goals**  
-Give citizens, farmers, policymakers, researchers, and the general public easy access to this open data on their phone. The app is an **independent, non-official** project: the author is not affiliated with the government or any state body; it's a learning and community project using open data. That and full data attribution are stated clearly on the **About** screen.
+Give citizens, farmers, policymakers, researchers, and the general public easy access to this open data — on their phone or in the browser. Many people in Serbia prefer a website over installing an app; the web build serves that use case. The app is an **independent, non-official** project: the author is not affiliated with the government or any state body; it's a learning and community project using open data. That and full data attribution are stated clearly on the **About** screen.
 
 **Users**  
 Multiple audiences: quick lookups ("how many holdings in my opština"), national/regional overview, and light exploration (map, snapshot date). The UI should support both "glance at one number" and "drill into one place."
@@ -82,6 +82,9 @@ When to refresh from the source (on app start, pull-to-refresh, or both) is deci
 **Rationale**  
 A local DB gives a single source of truth for the app, fast reads after first load, and a clear data layer; it also sets up optional offline/cache behaviour in a later iteration.
 
+**Platform storage (mobile + web)**  
+The app runs on **mobile** (iOS/Android) and **web**. Mobile can use SQLite (e.g. drift or sqflite). Flutter web does not support the same SQLite stack; persistence on web uses a different backend (e.g. **IndexedDB**). To keep one codebase, the **data layer is platform-agnostic**: define a **storage abstraction** (interface for "save snapshot + rows" and "read snapshot list, national totals, top N, per-opština"). Implement it with SQLite on mobile and with IndexedDB (or a package that wraps IndexedDB for the same API) on web. The repository and all UI depend only on this interface, so switching platform only swaps the implementation.
+
 ---
 
 ## 5. Non-functional and production aspects
@@ -100,17 +103,21 @@ No login or personal data. The app only displays public open data and opens the 
 **Attribution and disclaimer**  
 The About screen is the single place for: canonical dataset link, publisher (Uprava za agrarna plaćanja), license (Javni podaci), and the explicit text that the app is by an independent developer, not affiliated with the government or any state body, and that the app is a learning/community project using open data.
 
+**Platforms (mobile + web)**  
+Ship the same Flutter app as a **mobile** build (iOS/Android) and a **web** build (deployable to any static host). Use responsive layout (e.g. breakpoints, `LayoutBuilder`) so screens work on small and large viewports; navigation and features are identical. Enable the web target from the start and test in the browser as the UI is built.
+
 ---
 
 ## 6. Spec summary and implementation plan scope
 
 The implementation plan should cover at least:
 
-- **Data layer**: Discovering/fetching CSV URLs, parsing, DB schema (snapshots, opštine, counts), refresh strategy, Riverpod providers for reading from DB.
+- **Data layer**: Discovering/fetching CSV URLs, parsing, **storage abstraction** (interface + SQLite impl for mobile, IndexedDB or equivalent impl for web), refresh strategy, Riverpod providers for reading from storage.
 - **Screens**: Home (dashboard, dropdown, quick view), Map (opština boundaries or equivalent, tap → detail), Opština detail (totals, snapshot switcher), About (attribution + disclaimer).
 - **Navigation**: Bottom nav or drawer (Home, Map, About).
 - **Loading, error, retry**: UX and state handling for no network, server errors, empty data.
 - **Tests**: TDD per project rules; tests for parsing, DB access, and critical UI flows.
 - **Map**: Source of opština geography (e.g. GeoJSON or other) and how to make opštine tappable; same detail screen as from home.
+- **Web**: Enable web target; run and test in browser; ensure responsive layout (no mobile-only assumptions). Storage on web via the same abstraction (IndexedDB-backed impl).
 
 Future iteration (not v1): breakdown by organizational form on detail screen, presented as a **chart** (e.g. bar or pie), not table-only.
