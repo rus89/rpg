@@ -10,8 +10,14 @@ class CsvSnapshot {
   final String url;
 }
 
+/// Abstraction for snapshot URL discovery and CSV fetch (real or fake for tests).
+abstract class CsvSource {
+  Future<List<CsvSnapshot>> snapshotUrls();
+  Future<String> fetchCsv(String url);
+}
+
 /// Returns list of snapshot labels and CSV URLs; fetches CSV body by URL.
-class RpgCsvSource {
+class RpgCsvSource implements CsvSource {
   /// Permalink URLs from data.gov.rs; server redirects to the CSV file.
   /// Dataset: https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/
   Future<List<CsvSnapshot>> snapshotUrls() async {
