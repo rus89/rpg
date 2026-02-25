@@ -2,13 +2,14 @@
 // ABOUTME: Runs a MaterialApp placeholder until routing and screens are added.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:rpg/app/storage_bootstrap.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   initRpgStorage();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
