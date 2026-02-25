@@ -108,7 +108,26 @@ Ship the same Flutter app as a **mobile** build (iOS/Android) and a **web** buil
 
 ---
 
-## 6. Spec summary and implementation plan scope
+## 6. Visual design
+
+**Base**  
+Material 3 (Material Design 3) with **system fonts** (no custom font assets). The app should not look like the default Flutter theme; we want a **custom** look that still follows M3 patterns.
+
+**Inspiration**  
+Community Material 3 designs on Figma (e.g. polished M3 kits, dashboard/data-style templates): clear hierarchy, readable typography, intentional color and elevation, consistent spacing. Goal: professional, trustworthy, “data app” feel — suitable for citizens, researchers, and officials.
+
+**What we customize**  
+- **Color scheme**: Primary, secondary, surface, and semantic colors (e.g. for cards, app bar, buttons) chosen for contrast and readability; optional dark theme.
+- **Typography**: Use M3 type scale (display, headline, title, body, label) via `ThemeData.textTheme`; ensure body text is readable and headings are distinct.
+- **Components**: Card elevation/shape, button style, input fields (e.g. dropdown), so all screens feel part of one system.
+- **Spacing and density**: Consistent padding and gaps (e.g. 8/16/24) so layout doesn’t feel cramped or scattered.
+
+**Implementation**  
+One app-wide `ThemeData` (and optional `darkTheme`) in `MaterialApp`; screens use semantic styles (e.g. `Theme.of(context).textTheme.titleMedium`) and theme colors instead of hard-coded values. No new screens or flows; same structure, improved look.
+
+---
+
+## 7. Spec summary and implementation plan scope
 
 The implementation plan should cover at least:
 
@@ -119,5 +138,6 @@ The implementation plan should cover at least:
 - **Tests**: TDD per project rules; tests for parsing, DB access, and critical UI flows.
 - **Map**: Source of opština geography (e.g. GeoJSON or other) and how to make opštine tappable; same detail screen as from home.
 - **Web**: Enable web target; run and test in browser; ensure responsive layout (no mobile-only assumptions). Storage on web via the same abstraction (IndexedDB-backed impl).
+- **Visual design**: Custom Material 3 theme (colors, typography, component styles, spacing) inspired by community M3 Figma designs; system fonts; applied app-wide so the UI looks polished and consistent (see §6).
 
 Future iteration (not v1): breakdown by organizational form on detail screen, presented as a **chart** (e.g. bar or pie), not table-only.
