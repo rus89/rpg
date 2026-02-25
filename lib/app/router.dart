@@ -4,10 +4,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:rpg/screens/about_screen.dart';
 import 'package:rpg/screens/home_screen.dart';
 import 'package:rpg/screens/map_screen.dart';
 import 'package:rpg/screens/opstina_detail_screen.dart';
-import 'package:rpg/screens/placeholder_screens.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/',
@@ -46,7 +46,7 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/about',
-              builder: (context, state) => const PlaceholderAboutScreen(),
+              builder: (context, state) => const AboutScreen(),
             ),
           ],
         ),
