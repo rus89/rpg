@@ -1,7 +1,8 @@
 // ABOUTME: SQLite implementation of RpgStorage using Drift (mobile).
-// ABOUTME: App provides QueryExecutor via drift_flutter.driftDatabase(); web uses Task 5b impl.
+// ABOUTME: App provides QueryExecutor via drift_flutter.driftDatabase(); web uses storage_web.
 
 import 'package:drift/drift.dart';
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/data/storage.dart';
 
@@ -27,7 +28,7 @@ class Holdings extends Table {
 
 @DriftDatabase(tables: [Snapshots, Holdings])
 class RpgDatabase extends _$RpgDatabase {
-  RpgDatabase(QueryExecutor e) : super(e);
+  RpgDatabase(QueryExecutor super.e);
   @override
   int get schemaVersion => 1;
 }
@@ -89,4 +90,10 @@ class SqliteRpgStorage implements RpgStorage {
     if (row == null) return null;
     return OpstinaRow(opstinaName: row.opstinaName, totalRegistered: row.registered, totalActive: row.active);
   }
+}
+
+/// Creates RpgStorage for native (iOS/Android); persistence uses SQLite via path_provider.
+RpgStorage createNativeRpgStorage() {
+  final executor = driftDatabase(name: 'rpg.db');
+  return SqliteRpgStorage(RpgDatabase(executor));
 }

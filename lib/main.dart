@@ -3,7 +3,11 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:rpg/app/storage_bootstrap.dart';
+
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  initRpgStorage();
   runApp(const MyApp());
 }
 
