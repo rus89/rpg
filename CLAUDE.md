@@ -118,6 +118,7 @@ actual purpose.
 
 ## Testing
 
+- Before committing or claiming a task complete, run `flutter test` and `flutter analyze`. Fix any test failures or analyzer issues before committing.
 - ALL TEST FAILURES ARE YOUR RESPONSIBILITY, even if they're not your fault. The Broken Windows theory is real.
 - Never delete a test because it's failing. Instead, raise the issue with Milan.
 - Tests MUST comprehensively cover ALL functionality.
