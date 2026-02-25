@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:rpg/screens/home_screen.dart';
+import 'package:rpg/screens/opstina_detail_screen.dart';
 import 'package:rpg/screens/placeholder_screens.dart';
 
 final goRouter = GoRouter(
@@ -52,7 +53,7 @@ final goRouter = GoRouter(
     ),
     GoRoute(
       path: '/opstina',
-      builder: (context, state) => PlaceholderDetailScreen(
+      builder: (context, state) => OpstinaDetailScreen(
         name: state.uri.queryParameters['name'],
         snapshotId: state.uri.queryParameters['snapshotId'],
       ),
