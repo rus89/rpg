@@ -1,5 +1,5 @@
 // ABOUTME: GoRouter config: Home, Map, Detail (/opstina?name=&snapshotId=), About; shell with bottom nav.
-// ABOUTME: Placeholder screens until Task 8+; same Detail screen from Home and Map.
+// ABOUTME: Shell with bottom nav; same Detail screen from Home and Map.
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

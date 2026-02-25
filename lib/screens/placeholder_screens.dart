@@ -1,5 +1,5 @@
-// ABOUTME: Placeholder screens for router (Scaffold + AppBar + text) until real screens.
-// ABOUTME: Replaced by Home, Map, Detail, About in later tasks.
+// ABOUTME: Placeholder screens for router (Scaffold + AppBar + text) when route does not map to a main screen.
+// ABOUTME: Shell uses these for fallback; main routes use Home, Map, Detail, About.
 
 import 'package:flutter/material.dart';
 
