@@ -35,11 +35,35 @@ class MapScreen extends ConsumerWidget {
         ),
         data: (snapshots) {
           if (snapshots.isEmpty) {
-            return const Center(child: Text('Nema dostupnih snimaka.'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Nema dostupnih snimaka.'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => ref.invalidate(syncProvider),
+                    child: const Text('Pokušaj ponovo'),
+                  ),
+                ],
+              ),
+            );
           }
           return namesAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Greška: $e')),
+            error: (e, _) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Greška: $e'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => ref.invalidate(syncProvider),
+                    child: const Text('Pokušaj ponovo'),
+                  ),
+                ],
+              ),
+            ),
             data: (names) {
               if (names.isEmpty) {
                 return const Center(child: Text('Nema opština za izabrani snimak.'));

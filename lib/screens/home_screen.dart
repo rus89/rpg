@@ -51,7 +51,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
         data: (snapshots) {
           if (snapshots.isEmpty) {
-            return const Center(child: Text('Nema dostupnih snimaka.'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Nema dostupnih snimaka.'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => ref.invalidate(syncProvider),
+                    child: const Text('Pokušaj ponovo'),
+                  ),
+                ],
+              ),
+            );
           }
           final snapshotLabel = snapshotId != null
               ? _labelFor(snapshots, snapshotId)
