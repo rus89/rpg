@@ -1,17 +1,21 @@
-# rpg
+# RPG
 
-A new Flutter project.
+Flutter app (mobile and web) that shows Serbia’s RPG open data: registered and active agricultural holdings by municipality (opština). Same codebase for iOS, Android, and web; responsive layout. Data comes from [data.gov.rs](https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/).
 
-## Getting Started
+## Run
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+For a device or emulator, `flutter run` picks an available target. For web:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```bash
+flutter run -d chrome
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Design and data
+
+- Design and spec: [docs/DESIGN.md](docs/DESIGN.md)
+- Dataset: [RPG na data.gov.rs](https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/)
