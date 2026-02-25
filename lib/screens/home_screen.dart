@@ -40,7 +40,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Greška: $e'),
+              Text('Greška: $e', style: Theme.of(context).textTheme.bodyLarge),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => ref.invalidate(syncProvider),
@@ -55,7 +55,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Nema dostupnih snimaka.'),
+                  Text('Nema dostupnih snimaka.', style: Theme.of(context).textTheme.bodyLarge),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => ref.invalidate(syncProvider),
@@ -151,7 +151,7 @@ class _NationalSummary extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: totalsAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Text('Greška: $e'),
+          error: (e, _) => Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium),
           data: (totals) {
             if (totals == null) return const SizedBox.shrink();
             return Column(
@@ -193,7 +193,7 @@ class _TopOpstine extends StatelessWidget {
   Widget build(BuildContext context) {
     return topAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Text('Greška: $e'),
+      error: (e, _) => Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium),
       data: (list) {
         if (list.isEmpty) return const SizedBox.shrink();
         return Card(
@@ -210,7 +210,7 @@ class _TopOpstine extends StatelessWidget {
                 ...list.map(
                   (r) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text('${r.opstinaName}: ${r.totalActive} aktivno'),
+                    child: Text('${r.opstinaName}: ${r.totalActive} aktivno', style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ),
               ],
@@ -285,7 +285,7 @@ class _QuickView extends ConsumerWidget {
       error: (e, _) => Card(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text('Greška: $e'),
+          child: Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium),
         ),
       ),
       data: (row) {
@@ -301,8 +301,8 @@ class _QuickView extends ConsumerWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),
-                Text('Registrovano: ${row.totalRegistered}'),
-                Text('Aktivno: ${row.totalActive}'),
+                Text('Registrovano: ${row.totalRegistered}', style: Theme.of(context).textTheme.bodyLarge),
+                Text('Aktivno: ${row.totalActive}', style: Theme.of(context).textTheme.bodyLarge),
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: onPogledajSve,

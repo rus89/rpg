@@ -25,8 +25,9 @@ class AboutScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Podaci dolaze sa data.gov.rs. Izdavač: Uprava za agrarna plaćanja. Licenca: Javni podaci.',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             Link(
@@ -39,9 +40,10 @@ class AboutScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text('Napomena', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Ova aplikacija je rad nezavisnog programera koji nije povezan sa vladom niti bilo kojim državnim telom. '
               'Projekat učenja i zajednice koji koristi otvorene podatke.',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),

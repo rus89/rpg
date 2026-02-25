@@ -19,7 +19,7 @@ class OpstinaDetailScreen extends ConsumerWidget {
     if (name == null || name!.isEmpty || snapshotId == null || snapshotId!.isEmpty) {
       return Scaffold(
         appBar: AppBar(leading: const BackButton()),
-        body: const Center(child: Text('Opština nije izabrana.')),
+        body: Center(child: Text('Opština nije izabrana.', style: Theme.of(context).textTheme.bodyLarge)),
       );
     }
 
@@ -33,15 +33,15 @@ class OpstinaDetailScreen extends ConsumerWidget {
       ),
       body: snapshotListAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Greška: $e')),
+        error: (e, _) => Center(child: Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium)),
         data: (snapshots) {
           final label = _labelFor(snapshots, snapshotId!);
           return detailAsync.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Greška: $e')),
+            error: (e, _) => Center(child: Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium)),
             data: (row) {
               if (row == null) {
-                return Center(child: Text('Nema podataka za opštinu $name.'));
+                return Center(child: Text('Nema podataka za opštinu $name.', style: Theme.of(context).textTheme.bodyLarge));
               }
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16),

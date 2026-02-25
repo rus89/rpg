@@ -24,7 +24,7 @@ class MapScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Greška: $e'),
+              Text('Greška: $e', style: Theme.of(context).textTheme.bodyLarge),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => ref.invalidate(syncProvider),
@@ -39,7 +39,7 @@ class MapScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Nema dostupnih snimaka.'),
+                  Text('Nema dostupnih snimaka.', style: Theme.of(context).textTheme.bodyLarge),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => ref.invalidate(syncProvider),
@@ -55,7 +55,7 @@ class MapScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Greška: $e'),
+                  Text('Greška: $e', style: Theme.of(context).textTheme.bodyLarge),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => ref.invalidate(syncProvider),
@@ -66,7 +66,7 @@ class MapScreen extends ConsumerWidget {
             ),
             data: (names) {
               if (names.isEmpty) {
-                return const Center(child: Text('Nema opština za izabrani snimak.'));
+                return Center(child: Text('Nema opština za izabrani snimak.', style: Theme.of(context).textTheme.bodyLarge));
               }
               return ListView.builder(
                 itemCount: names.length,
