@@ -19,7 +19,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Home'), findsAtLeast(1));
+    expect(find.text('Pregled'), findsAtLeast(1));
   });
 
   testWidgets('navigating to /about shows About', (WidgetTester tester) async {
@@ -36,6 +36,6 @@ void main() {
     context.go('/about');
     await tester.pumpAndSettle();
 
-    expect(find.text('About'), findsAtLeast(1));
+    expect(find.text('O aplikaciji'), findsAtLeast(1));
   });
 }

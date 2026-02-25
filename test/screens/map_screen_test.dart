@@ -34,7 +34,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Map'));
+    await tester.tap(find.text('Mapa'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Barajevo'));

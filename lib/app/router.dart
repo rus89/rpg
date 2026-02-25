@@ -19,9 +19,9 @@ final goRouter = GoRouter(
           currentIndex: navigationShell.currentIndex,
           onTap: (index) => navigationShell.goBranch(index),
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
-            BottomNavigationBarItem(icon: Icon(Icons.info), label: 'About'),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Pregled'),
+            BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
+            BottomNavigationBarItem(icon: Icon(Icons.info), label: 'O aplikaciji'),
           ],
         ),
       ),
