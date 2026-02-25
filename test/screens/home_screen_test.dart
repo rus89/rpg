@@ -11,6 +11,46 @@ import 'package:rpg/data/storage.dart';
 import 'package:rpg/providers/data_providers.dart';
 
 void main() {
+  testWidgets('shows error and Retry; on Retry sync is called again and dashboard appears', (WidgetTester tester) async {
+    final fakeStorage = FakeRpgStorage();
+    final repo = RpgRepository(fakeStorage);
+    await repo.saveSnapshot(
+      const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
+      [const OpstinaRow(opstinaName: 'Barajevo', totalRegistered: 100, totalActive: 98)],
+    );
+    var syncCallCount = 0;
+    Future<void> syncOverride(ref) {
+      syncCallCount++;
+      if (syncCallCount == 1) return Future.error('network');
+      return Future.value();
+    }
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          repositoryProvider.overrideWithValue(repo),
+          syncProvider.overrideWith(syncOverride),
+        ],
+        child: MaterialApp.router(routerConfig: goRouter),
+      ),
+    );
+    await tester.pump();
+    for (var i = 0; i < 50; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+      if (find.textContaining('Greška').evaluate().isNotEmpty) break;
+    }
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Greška'), findsAtLeast(1));
+    expect(find.text('Pokušaj ponovo'), findsOneWidget);
+
+    await tester.tap(find.text('Pokušaj ponovo'));
+    await tester.pumpAndSettle();
+
+    expect(syncCallCount, 2);
+    expect(find.text('Nacionalni zbir'), findsAtLeast(1));
+  });
+
   testWidgets('shows dashboard and dropdown when repo has data', (WidgetTester tester) async {
     final fakeStorage = FakeRpgStorage();
     final repo = RpgRepository(fakeStorage);
