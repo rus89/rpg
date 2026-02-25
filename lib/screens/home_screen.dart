@@ -225,11 +225,11 @@ class _OpstinaDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return namesAsync.when(
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (e, st) => const SizedBox.shrink(),
       data: (names) {
         if (names.isEmpty) return const SizedBox.shrink();
         return DropdownButtonFormField<String>(
-          value: selectedName,
+          initialValue: selectedName,
           decoration: const InputDecoration(labelText: 'Opština'),
           items: [
             const DropdownMenuItem<String>(

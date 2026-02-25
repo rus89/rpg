@@ -105,7 +105,7 @@ class _SnapshotSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: currentId,
+      initialValue: currentId,
       decoration: const InputDecoration(labelText: 'Snimak'),
       items: snapshots.map((s) => DropdownMenuItem(value: s.id, child: Text(s.label))).toList(),
       onChanged: (id) {
