@@ -20,23 +20,28 @@ abstract class CsvSource {
 class RpgCsvSource implements CsvSource {
   /// Permalink URLs from data.gov.rs; server redirects to the CSV file.
   /// Dataset: https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/
+  @override
   Future<List<CsvSnapshot>> snapshotUrls() async {
     return [
       const CsvSnapshot(
         label: '31.12.2025',
-        url: 'https://data.gov.rs/sr/datasets/r/4e7d303e-5a36-41ad-b865-31add6be4ae2',
+        url:
+            'https://data.gov.rs/sr/datasets/r/4e7d303e-5a36-41ad-b865-31add6be4ae2',
       ),
       const CsvSnapshot(
         label: '07.07.2025',
-        url: 'https://data.gov.rs/sr/datasets/r/74f95010-ba82-4596-8d6a-0600dfab719c',
+        url:
+            'https://data.gov.rs/sr/datasets/r/74f95010-ba82-4596-8d6a-0600dfab719c',
       ),
       const CsvSnapshot(
         label: '31.12.2024',
-        url: 'https://data.gov.rs/sr/datasets/r/0aabec32-ceff-4707-881b-883830cb67b5',
+        url:
+            'https://data.gov.rs/sr/datasets/r/0aabec32-ceff-4707-881b-883830cb67b5',
       ),
     ];
   }
 
+  @override
   Future<String> fetchCsv(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) {

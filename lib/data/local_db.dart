@@ -28,7 +28,7 @@ class Holdings extends Table {
 
 @DriftDatabase(tables: [Snapshots, Holdings])
 class RpgDatabase extends _$RpgDatabase {
-  RpgDatabase(QueryExecutor super.e);
+  RpgDatabase(super.e);
   @override
   int get schemaVersion => 1;
 }
@@ -40,21 +40,33 @@ class SqliteRpgStorage implements RpgStorage {
 
   @override
   Future<void> saveSnapshot(RpgSnapshot snapshot, List<OpstinaRow> rows) async {
-    await (_db.delete(_db.holdings)..where((t) => t.snapshotId.equals(snapshot.id))).go();
-    await (_db.delete(_db.snapshots)..where((t) => t.id.equals(snapshot.id))).go();
-    await _db.into(_db.snapshots).insert(SnapshotsCompanion.insert(
-      id: snapshot.id,
-      label: snapshot.label,
-      date: Value(null),
-      fetchedAt: Value(DateTime.now().millisecondsSinceEpoch),
-    ));
+    await (_db.delete(
+      _db.holdings,
+    )..where((t) => t.snapshotId.equals(snapshot.id))).go();
+    await (_db.delete(
+      _db.snapshots,
+    )..where((t) => t.id.equals(snapshot.id))).go();
+    await _db
+        .into(_db.snapshots)
+        .insert(
+          SnapshotsCompanion.insert(
+            id: snapshot.id,
+            label: snapshot.label,
+            date: Value(null),
+            fetchedAt: Value(DateTime.now().millisecondsSinceEpoch),
+          ),
+        );
     for (final row in rows) {
-      await _db.into(_db.holdings).insert(HoldingsCompanion.insert(
-        snapshotId: snapshot.id,
-        opstinaName: row.opstinaName,
-        registered: row.totalRegistered,
-        active: row.totalActive,
-      ));
+      await _db
+          .into(_db.holdings)
+          .insert(
+            HoldingsCompanion.insert(
+              snapshotId: snapshot.id,
+              opstinaName: row.opstinaName,
+              registered: row.totalRegistered,
+              active: row.totalActive,
+            ),
+          );
     }
   }
 
@@ -66,7 +78,9 @@ class SqliteRpgStorage implements RpgStorage {
 
   @override
   Future<NationalTotals?> getNationalTotals(String snapshotId) async {
-    final rows = await (_db.select(_db.holdings)..where((t) => t.snapshotId.equals(snapshotId))).get();
+    final rows = await (_db.select(
+      _db.holdings,
+    )..where((t) => t.snapshotId.equals(snapshotId))).get();
     if (rows.isEmpty) return null;
     final registered = rows.fold<int>(0, (s, r) => s + r.registered);
     final active = rows.fold<int>(0, (s, r) => s + r.active);
@@ -75,20 +89,38 @@ class SqliteRpgStorage implements RpgStorage {
 
   @override
   Future<List<OpstinaRow>> getTopOpstine(String snapshotId, int n) async {
-    final rows = await (_db.select(_db.holdings)
-          ..where((t) => t.snapshotId.equals(snapshotId))
-          ..orderBy([(t) => OrderingTerm.desc(t.active)]))
-        .get();
-    return rows.take(n).map((r) => OpstinaRow(opstinaName: r.opstinaName, totalRegistered: r.registered, totalActive: r.active)).toList();
+    final rows =
+        await (_db.select(_db.holdings)
+              ..where((t) => t.snapshotId.equals(snapshotId))
+              ..orderBy([(t) => OrderingTerm.desc(t.active)]))
+            .get();
+    return rows
+        .take(n)
+        .map(
+          (r) => OpstinaRow(
+            opstinaName: r.opstinaName,
+            totalRegistered: r.registered,
+            totalActive: r.active,
+          ),
+        )
+        .toList();
   }
 
   @override
   Future<OpstinaRow?> getOpstina(String snapshotId, String opstinaName) async {
-    final row = await (_db.select(_db.holdings)
-          ..where((t) => t.snapshotId.equals(snapshotId) & t.opstinaName.equals(opstinaName)))
-        .getSingleOrNull();
+    final row =
+        await (_db.select(_db.holdings)..where(
+              (t) =>
+                  t.snapshotId.equals(snapshotId) &
+                  t.opstinaName.equals(opstinaName),
+            ))
+            .getSingleOrNull();
     if (row == null) return null;
-    return OpstinaRow(opstinaName: row.opstinaName, totalRegistered: row.registered, totalActive: row.active);
+    return OpstinaRow(
+      opstinaName: row.opstinaName,
+      totalRegistered: row.registered,
+      totalActive: row.active,
+    );
   }
 }
 
