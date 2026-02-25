@@ -22,4 +22,7 @@ class RpgRepository {
 
   Future<OpstinaRow?> getOpstina(String snapshotId, String opstinaName) =>
       _storage.getOpstina(snapshotId, opstinaName);
+
+  Future<List<String>> getOpstinaNames(String snapshotId) =>
+      _storage.getOpstinaNames(snapshotId);
 }

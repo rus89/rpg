@@ -96,4 +96,11 @@ class FakeRpgStorage implements RpgStorage {
       return null;
     }
   }
+
+  @override
+  Future<List<String>> getOpstinaNames(String snapshotId) async {
+    final rows = _rows[snapshotId];
+    if (rows == null) return [];
+    return rows.map((r) => r.opstinaName).toSet().toList()..sort();
+  }
 }

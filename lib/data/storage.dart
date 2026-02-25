@@ -10,4 +10,5 @@ abstract class RpgStorage {
   Future<NationalTotals?> getNationalTotals(String snapshotId);
   Future<List<OpstinaRow>> getTopOpstine(String snapshotId, int n);
   Future<OpstinaRow?> getOpstina(String snapshotId, String opstinaName);
+  Future<List<String>> getOpstinaNames(String snapshotId);
 }

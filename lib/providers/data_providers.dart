@@ -46,3 +46,11 @@ final opstinaDetailProvider = FutureProvider.autoDispose.family<OpstinaRow?, ({S
     return ref.read(repositoryProvider).getOpstina(params.snapshotId, params.opstinaName);
   },
 );
+
+/// List of opština names for the selected snapshot (for dropdown).
+final opstinaNamesProvider = FutureProvider.autoDispose.family<List<String>, String>(
+  (ref, snapshotId) async {
+    await ref.watch(syncProvider.future);
+    return ref.read(repositoryProvider).getOpstinaNames(snapshotId);
+  },
+);

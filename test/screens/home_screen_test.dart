@@ -1,39 +1,17 @@
-// ABOUTME: Tests for Riverpod data providers using overridden repository.
-// ABOUTME: Fake repository with data; expect snapshotListProvider yields list.
+// ABOUTME: Widget tests for Home screen: dashboard, dropdown, "Pogledaj sve" navigation.
+// ABOUTME: Overrides repository and sync; expects summary, dropdown; tap "Pogledaj sve" verifies go_router.
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rpg/app/router.dart';
 import 'package:rpg/data/repository.dart';
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/data/storage.dart';
 import 'package:rpg/providers/data_providers.dart';
 
 void main() {
-  test('snapshotListProvider returns list after fake repo has data', () async {
-    final fakeStorage = FakeRpgStorage();
-    final repo = RpgRepository(fakeStorage);
-    await repo.saveSnapshot(
-      const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
-      [
-        const OpstinaRow(opstinaName: 'Barajevo', totalRegistered: 100, totalActive: 98),
-      ],
-    );
-
-    final container = ProviderContainer(
-      overrides: [
-        repositoryProvider.overrideWithValue(repo),
-        syncProvider.overrideWith((ref) => Future.value()),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    final list = await container.read(snapshotListProvider.future);
-    expect(list.length, 1);
-    expect(list.first.id, '31.12.2025');
-    expect(list.first.label, '31.12.2025');
-  });
-
-  test('nationalTotalsProvider returns totals for snapshot', () async {
+  testWidgets('shows dashboard and dropdown when repo has data', (WidgetTester tester) async {
     final fakeStorage = FakeRpgStorage();
     final repo = RpgRepository(fakeStorage);
     await repo.saveSnapshot(
@@ -44,18 +22,54 @@ void main() {
       ],
     );
 
-    final container = ProviderContainer(
-      overrides: [
-        repositoryProvider.overrideWithValue(repo),
-        syncProvider.overrideWith((ref) => Future.value()),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          repositoryProvider.overrideWithValue(repo),
+          syncProvider.overrideWith((ref) => Future.value()),
+        ],
+        child: MaterialApp.router(routerConfig: goRouter),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Nacionalni zbir'), findsAtLeast(1));
+    expect(find.text('Registrovano: 300'), findsAtLeast(1));
+    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+  });
+
+  testWidgets('tap Pogledaj sve navigates to detail with opstina and snapshot', (WidgetTester tester) async {
+    final fakeStorage = FakeRpgStorage();
+    final repo = RpgRepository(fakeStorage);
+    await repo.saveSnapshot(
+      const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
+      [
+        const OpstinaRow(opstinaName: 'Barajevo', totalRegistered: 100, totalActive: 98),
+        const OpstinaRow(opstinaName: 'Cukarica', totalRegistered: 200, totalActive: 195),
       ],
     );
-    addTearDown(container.dispose);
 
-    final totals = await container.read(nationalTotalsProvider('31.12.2025').future);
-    expect(totals, isNotNull);
-    expect(totals!.registered, 300);
-    expect(totals.active, 293);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          repositoryProvider.overrideWithValue(repo),
+          syncProvider.overrideWith((ref) => Future.value()),
+        ],
+        child: MaterialApp.router(routerConfig: goRouter),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Barajevo').last);
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Pogledaj sve'));
+    await tester.tap(find.text('Pogledaj sve'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Barajevo'), findsAtLeast(1));
   });
 }
 

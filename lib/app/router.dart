@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:rpg/screens/home_screen.dart';
 import 'package:rpg/screens/placeholder_screens.dart';
 
 final goRouter = GoRouter(
@@ -27,7 +28,7 @@ final goRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, state) => const PlaceholderHomeScreen(),
+              builder: (context, state) => const HomeScreen(),
             ),
           ],
         ),

@@ -122,6 +122,17 @@ class SqliteRpgStorage implements RpgStorage {
       totalActive: row.active,
     );
   }
+
+  @override
+  Future<List<String>> getOpstinaNames(String snapshotId) async {
+    final rows =
+        await (_db.select(_db.holdings)..where(
+              (t) => t.snapshotId.equals(snapshotId),
+            ))
+            .get();
+    final names = rows.map((r) => r.opstinaName).toSet().toList()..sort();
+    return names;
+  }
 }
 
 /// Creates RpgStorage for native (iOS/Android); persistence uses SQLite via path_provider.
