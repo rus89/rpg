@@ -6,7 +6,7 @@ import 'package:url_launcher/link.dart';
 
 /// Canonical RPG dataset URL (data.gov.rs).
 const String datasetUrl =
-    'https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstava/';
+    'https://data.gov.rs/sr/datasets/rpg-broj-svikh-registrovanikh-poljoprivrednikh-gazdinstava-aktivna-gazdinstva/';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -20,7 +20,10 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Izvor podataka', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              'Izvor podataka',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             const Text(
               'Podaci dolaze sa data.gov.rs. Izdavač: Uprava za agrarna plaćanja. Licenca: Javni podaci.',
