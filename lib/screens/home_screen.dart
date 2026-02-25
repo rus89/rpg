@@ -22,9 +22,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final snapshotListAsync = ref.watch(snapshotListProvider);
     final snapshotId = _effectiveSnapshotId(ref);
-    final totalsAsync = snapshotId != null ? ref.watch(nationalTotalsProvider(snapshotId)) : const AsyncValue.data(null);
-    final topAsync = snapshotId != null ? ref.watch(topOpstineProvider((snapshotId: snapshotId, n: 5))) : const AsyncValue.data(<OpstinaRow>[]);
-    final namesAsync = snapshotId != null ? ref.watch(opstinaNamesProvider(snapshotId)) : const AsyncValue.data(<String>[]);
+    final totalsAsync = snapshotId != null
+        ? ref.watch(nationalTotalsProvider(snapshotId))
+        : const AsyncValue.data(null);
+    final topAsync = snapshotId != null
+        ? ref.watch(topOpstineProvider((snapshotId: snapshotId, n: 5)))
+        : const AsyncValue.data(<OpstinaRow>[]);
+    final namesAsync = snapshotId != null
+        ? ref.watch(opstinaNamesProvider(snapshotId))
+        : const AsyncValue.data(<String>[]);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Pregled')),
@@ -43,11 +49,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ],
           ),
         ),
-          data: (snapshots) {
+        data: (snapshots) {
           if (snapshots.isEmpty) {
             return const Center(child: Text('Nema dostupnih snimaka.'));
           }
-          final snapshotLabel = snapshotId != null ? _labelFor(snapshots, snapshotId) : null;
+          final snapshotLabel = snapshotId != null
+              ? _labelFor(snapshots, snapshotId)
+              : null;
           return LayoutBuilder(
             builder: (context, constraints) {
               final isWide = constraints.maxWidth > 600;
@@ -55,18 +63,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 padding: EdgeInsets.all(isWide ? 24 : 16),
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: isWide ? 800 : double.infinity),
+                    constraints: BoxConstraints(
+                      maxWidth: isWide ? 800 : double.infinity,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _NationalSummary(totalsAsync: totalsAsync, snapshotLabel: snapshotLabel),
+                        _NationalSummary(
+                          totalsAsync: totalsAsync,
+                          snapshotLabel: snapshotLabel,
+                        ),
                         const SizedBox(height: 24),
                         _TopOpstine(topAsync: topAsync),
                         const SizedBox(height: 24),
                         _OpstinaDropdown(
                           namesAsync: namesAsync,
                           selectedName: _selectedOpstinaName,
-                          onChanged: (name) => setState(() => _selectedOpstinaName = name),
+                          onChanged: (name) =>
+                              setState(() => _selectedOpstinaName = name),
                         ),
                         if (_selectedOpstinaName != null) ...[
                           const SizedBox(height: 16),
@@ -74,7 +88,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             snapshotId: snapshotId!,
                             opstinaName: _selectedOpstinaName!,
                             onPogledajSve: () {
-                              context.go('/opstina?name=${Uri.encodeComponent(_selectedOpstinaName!)}&snapshotId=${Uri.encodeComponent(snapshotId)}');
+                              context.go(
+                                '/opstina?name=${Uri.encodeComponent(_selectedOpstinaName!)}&snapshotId=${Uri.encodeComponent(snapshotId)}',
+                              );
                             },
                           ),
                         ],
@@ -129,11 +145,24 @@ class _NationalSummary extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Nacionalni zbir', style: Theme.of(context).textTheme.titleMedium),
-                if (snapshotLabel != null) Text('Od: $snapshotLabel', style: Theme.of(context).textTheme.bodySmall),
+                Text(
+                  'Nacionalni zbir',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                if (snapshotLabel != null)
+                  Text(
+                    'Od: $snapshotLabel',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 const SizedBox(height: 8),
-                Text('Registrovano: ${totals.registered}', style: Theme.of(context).textTheme.bodyLarge),
-                Text('Aktivno: ${totals.active}', style: Theme.of(context).textTheme.bodyLarge),
+                Text(
+                  'Registrovano: ${totals.registered}',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Text(
+                  'Aktivno: ${totals.active}',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
               ],
             );
           },
@@ -161,12 +190,17 @@ class _TopOpstine extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Top 5 opština po aktivnim', style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  'Top 5 opština po aktivnim',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
-                ...list.map((r) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text('${r.opstinaName}: ${r.totalActive} aktivno'),
-                    )),
+                ...list.map(
+                  (r) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text('${r.opstinaName}: ${r.totalActive} aktivno'),
+                  ),
+                ),
               ],
             ),
           ),
@@ -198,8 +232,13 @@ class _OpstinaDropdown extends StatelessWidget {
           value: selectedName,
           decoration: const InputDecoration(labelText: 'Opština'),
           items: [
-            const DropdownMenuItem<String>(value: null, child: Text('— Izaberi opštinu —')),
-            ...names.map((n) => DropdownMenuItem<String>(value: n, child: Text(n))),
+            const DropdownMenuItem<String>(
+              value: null,
+              child: Text('— Izaberi opštinu —'),
+            ),
+            ...names.map(
+              (n) => DropdownMenuItem<String>(value: n, child: Text(n)),
+            ),
           ],
           onChanged: onChanged,
         );
@@ -221,10 +260,22 @@ class _QuickView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailAsync = ref.watch(opstinaDetailProvider((snapshotId: snapshotId, opstinaName: opstinaName)));
+    final detailAsync = ref.watch(
+      opstinaDetailProvider((snapshotId: snapshotId, opstinaName: opstinaName)),
+    );
     return detailAsync.when(
-      loading: () => const Card(child: Padding(padding: EdgeInsets.all(16), child: Center(child: CircularProgressIndicator()))),
-      error: (e, _) => Card(child: Padding(padding: const EdgeInsets.all(16), child: Text('Greška: $e'))),
+      loading: () => const Card(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+      error: (e, _) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text('Greška: $e'),
+        ),
+      ),
       data: (row) {
         if (row == null) return const SizedBox.shrink();
         return Card(
@@ -233,7 +284,10 @@ class _QuickView extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(opstinaName, style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  opstinaName,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 const SizedBox(height: 8),
                 Text('Registrovano: ${row.totalRegistered}'),
                 Text('Aktivno: ${row.totalActive}'),
