@@ -5,7 +5,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/providers/data_providers.dart';
 import 'package:rpg/widgets/data_card.dart';
@@ -35,7 +34,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         : const AsyncValue.data(<String>[]);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Pregled')),
+      appBar: AppBar(
+        title: const Text('Pregled registriranih poljoprivrednih gazdinstava'),
+      ),
       body: snapshotListAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(
@@ -57,7 +58,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Nema dostupnih snimaka.', style: Theme.of(context).textTheme.bodyLarge),
+                  Text(
+                    'Nema dostupnih snimaka.',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => ref.invalidate(syncProvider),
@@ -153,7 +157,11 @@ class _NationalSummary extends StatelessWidget {
       key: const Key('hero_national_total'),
       title: 'Nacionalni zbir',
       subtitle: snapshotLabel != null ? 'Od: $snapshotLabel' : null,
-      leading: Icon(Icons.agriculture, color: theme.colorScheme.primary, size: 32),
+      leading: Icon(
+        Icons.agriculture,
+        color: theme.colorScheme.primary,
+        size: 32,
+      ),
       child: totalsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Text('Greška: $e', style: theme.textTheme.bodyMedium),
@@ -205,7 +213,9 @@ class _TopMunicipalities extends StatelessWidget {
       error: (e, _) => Text('Greška: $e', style: theme.textTheme.bodyMedium),
       data: (list) {
         if (list.isEmpty) return const SizedBox.shrink();
-        final maxActive = list.map((r) => r.totalActive).reduce((a, b) => a > b ? a : b);
+        final maxActive = list
+            .map((r) => r.totalActive)
+            .reduce((a, b) => a > b ? a : b);
         final maxY = (maxActive * 1.15).clamp(1.0, double.infinity);
         final barGroups = list.asMap().entries.map((e) {
           final i = e.key;
@@ -217,7 +227,9 @@ class _TopMunicipalities extends StatelessWidget {
                 toY: r.totalActive.toDouble(),
                 color: theme.colorScheme.primary,
                 width: 20,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(4),
+                ),
               ),
             ],
             showingTooltipIndicators: [],
@@ -226,7 +238,11 @@ class _TopMunicipalities extends StatelessWidget {
         return DataCard(
           key: const Key('top_five_section'),
           title: 'Top 5 opština po aktivnim',
-          leading: Icon(Icons.leaderboard, color: theme.colorScheme.primary, size: 28),
+          leading: Icon(
+            Icons.leaderboard,
+            color: theme.colorScheme.primary,
+            size: 28,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -251,7 +267,9 @@ class _TopMunicipalities extends StatelessWidget {
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
-                                  name.length > 10 ? '${name.substring(0, 8)}.' : name,
+                                  name.length > 10
+                                      ? '${name.substring(0, 8)}.'
+                                      : name,
                                   style: theme.textTheme.labelSmall,
                                 ),
                               );
@@ -261,9 +279,15 @@ class _TopMunicipalities extends StatelessWidget {
                           reservedSize: 28,
                         ),
                       ),
-                      leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      leftTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
                     ),
                     gridData: const FlGridData(show: false),
                     borderData: FlBorderData(show: false),
@@ -275,7 +299,10 @@ class _TopMunicipalities extends StatelessWidget {
               ...list.map(
                 (r) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Text('${r.municipalityName}: ${r.totalActive} aktivno', style: theme.textTheme.bodyMedium),
+                  child: Text(
+                    '${r.municipalityName}: ${r.totalActive} aktivno',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
               ),
             ],
@@ -308,7 +335,11 @@ class _MunicipalityDropdown extends StatelessWidget {
         return DataCard(
           key: const Key('municipality_dropdown_section'),
           title: 'Izaberi opštinu',
-          leading: Icon(Icons.location_city, color: theme.colorScheme.primary, size: 28),
+          leading: Icon(
+            Icons.location_city,
+            color: theme.colorScheme.primary,
+            size: 28,
+          ),
           child: DropdownButtonFormField<String?>(
             initialValue: selectedName,
             decoration: const InputDecoration(labelText: 'Opština'),
@@ -343,12 +374,17 @@ class _QuickView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(
-      municipalityDetailProvider((snapshotId: snapshotId, municipalityName: municipalityName)),
+      municipalityDetailProvider((
+        snapshotId: snapshotId,
+        municipalityName: municipalityName,
+      )),
     );
     final theme = Theme.of(context).textTheme;
     return detailAsync.when(
-      loading: () => DataCard(child: const Center(child: CircularProgressIndicator())),
-      error: (e, _) => DataCard(child: Text('Greška: $e', style: theme.bodyMedium)),
+      loading: () =>
+          DataCard(child: const Center(child: CircularProgressIndicator())),
+      error: (e, _) =>
+          DataCard(child: Text('Greška: $e', style: theme.bodyMedium)),
       data: (row) {
         if (row == null) return const SizedBox.shrink();
         return DataCard(
@@ -357,7 +393,10 @@ class _QuickView extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Registrovano: ${row.totalRegistered}', style: theme.bodyLarge),
+              Text(
+                'Registrovano: ${row.totalRegistered}',
+                style: theme.bodyLarge,
+              ),
               Text('Aktivno: ${row.totalActive}', style: theme.bodyLarge),
               const SizedBox(height: 12),
               ElevatedButton(

@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:rpg/app/router.dart';
 import 'package:rpg/app/storage_bootstrap.dart';
 import 'package:rpg/app/theme.dart';
@@ -20,9 +19,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'RPG',
+      title: 'Registrovana poljoprivredna gazdinstva',
       theme: appTheme,
-      darkTheme: appDarkTheme,
       routerConfig: goRouter,
     );
   }
