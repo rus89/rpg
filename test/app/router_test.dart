@@ -15,6 +15,15 @@ import 'package:rpg/providers/data_providers.dart';
 
 import '../fake_storage.dart';
 
+/// Pumps until [finder] matches or [maxPumps] is reached; returns true if found.
+Future<bool> pumpUntilFound(WidgetTester tester, Finder finder, {int maxPumps = 50}) async {
+  for (var i = 0; i < maxPumps; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+    if (tester.widgetList(finder).isNotEmpty) return true;
+  }
+  return false;
+}
+
 void main() {
   testWidgets('initial route is Home', (WidgetTester tester) async {
     await tester.pumpWidget(
@@ -80,20 +89,17 @@ void main() {
         ),
       ),
     );
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
 
     final context = tester.element(find.byType(Scaffold).first);
     unawaited(context.push('/opstina?name=Barajevo&snapshotId=31.12.2025'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-
+    final detailShown = await pumpUntilFound(tester, find.byType(BackButton));
+    expect(detailShown, isTrue, reason: 'Detail screen with BackButton should appear after push');
     expect(find.byType(BackButton), findsOneWidget);
 
     await tester.tap(find.byType(BackButton));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-
+    final homeShown = await pumpUntilFound(tester, find.text('Pregled'));
+    expect(homeShown, isTrue, reason: 'Home (Pregled) should appear after tapping Back');
     expect(find.text('Pregled'), findsAtLeast(1));
   });
 }
