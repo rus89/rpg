@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/providers/data_providers.dart';
+import 'package:rpg/widgets/data_card.dart';
 
 class MunicipalityDetailScreen extends ConsumerWidget {
   const MunicipalityDetailScreen({super.key, this.name, this.snapshotId});
@@ -56,20 +57,15 @@ class MunicipalityDetailScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                     ],
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (label != null) ...[
-                              Text('Od: $label', style: Theme.of(context).textTheme.bodySmall),
-                              const SizedBox(height: 8),
-                            ],
-                            Text('Registrovano: ${row.totalRegistered}', style: Theme.of(context).textTheme.bodyLarge),
-                            Text('Aktivno: ${row.totalActive}', style: Theme.of(context).textTheme.bodyLarge),
-                          ],
-                        ),
+                    DataCard(
+                      subtitle: label != null ? 'Od: $label' : null,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Registrovano: ${row.totalRegistered}', style: Theme.of(context).textTheme.bodyLarge),
+                          Text('Aktivno: ${row.totalActive}', style: Theme.of(context).textTheme.bodyLarge),
+                        ],
                       ),
                     ),
                   ],

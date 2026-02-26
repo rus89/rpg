@@ -63,6 +63,10 @@ ThemeData get appTheme {
       elevation: 0,
       scrolledUnderElevation: 1,
     ),
+    listTileTheme: ListTileThemeData(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    ),
   );
 }
 
@@ -134,6 +138,10 @@ ThemeData get appDarkTheme {
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 1,
+    ),
+    listTileTheme: ListTileThemeData(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     ),
   );
 }

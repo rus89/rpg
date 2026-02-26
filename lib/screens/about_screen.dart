@@ -2,6 +2,7 @@
 // ABOUTME: Uses url_launcher Link for canonical dataset URL.
 
 import 'package:flutter/material.dart';
+import 'package:rpg/widgets/section_header.dart';
 import 'package:url_launcher/link.dart';
 
 /// Canonical RPG dataset URL (data.gov.rs).
@@ -20,11 +21,7 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Izvor podataka',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
+            const SectionHeader(title: 'Izvor podataka'),
             Text(
               'Podaci dolaze sa data.gov.rs. Izdavač: Uprava za agrarna plaćanja. Licenca: Javni podaci.',
               style: Theme.of(context).textTheme.bodyMedium,
@@ -38,8 +35,7 @@ class AboutScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Text('Napomena', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
+            const SectionHeader(title: 'Napomena'),
             Text(
               'Ova aplikacija je rad nezavisnog programera koji nije povezan sa vladom niti bilo kojim državnim telom. '
               'Projekat učenja i zajednice koji koristi otvorene podatke.',

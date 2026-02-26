@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/providers/data_providers.dart';
+import 'package:rpg/widgets/data_card.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -146,39 +147,24 @@ class _NationalSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: totalsAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium),
-          data: (totals) {
-            if (totals == null) return const SizedBox.shrink();
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nacionalni zbir',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                if (snapshotLabel != null)
-                  Text(
-                    'Od: $snapshotLabel',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                const SizedBox(height: 8),
-                Text(
-                  'Registrovano: ${totals.registered}',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                Text(
-                  'Aktivno: ${totals.active}',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ],
-            );
-          },
-        ),
+    final theme = Theme.of(context).textTheme;
+    return DataCard(
+      title: 'Nacionalni zbir',
+      subtitle: snapshotLabel != null ? 'Od: $snapshotLabel' : null,
+      child: totalsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Text('Greška: $e', style: theme.bodyMedium),
+        data: (totals) {
+          if (totals == null) return const SizedBox.shrink();
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Registrovano: ${totals.registered}', style: theme.bodyLarge),
+              Text('Aktivno: ${totals.active}', style: theme.bodyLarge),
+            ],
+          );
+        },
       ),
     );
   }
@@ -191,30 +177,25 @@ class _TopMunicipalities extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
     return topAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium),
+      error: (e, _) => Text('Greška: $e', style: theme.bodyMedium),
       data: (list) {
         if (list.isEmpty) return const SizedBox.shrink();
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Top 5 opština po aktivnim',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                ...list.map(
+        return DataCard(
+          title: 'Top 5 opština po aktivnim',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: list
+                .map(
                   (r) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text('${r.municipalityName}: ${r.totalActive} aktivno', style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text('${r.municipalityName}: ${r.totalActive} aktivno', style: theme.bodyMedium),
                   ),
-                ),
-              ],
-            ),
+                )
+                .toList(),
           ),
         );
       },
@@ -275,41 +256,26 @@ class _QuickView extends ConsumerWidget {
     final detailAsync = ref.watch(
       municipalityDetailProvider((snapshotId: snapshotId, municipalityName: municipalityName)),
     );
+    final theme = Theme.of(context).textTheme;
     return detailAsync.when(
-      loading: () => const Card(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      ),
-      error: (e, _) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text('Greška: $e', style: Theme.of(context).textTheme.bodyMedium),
-        ),
-      ),
+      loading: () => DataCard(child: const Center(child: CircularProgressIndicator())),
+      error: (e, _) => DataCard(child: Text('Greška: $e', style: theme.bodyMedium)),
       data: (row) {
         if (row == null) return const SizedBox.shrink();
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  municipalityName,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 8),
-                Text('Registrovano: ${row.totalRegistered}', style: Theme.of(context).textTheme.bodyLarge),
-                Text('Aktivno: ${row.totalActive}', style: Theme.of(context).textTheme.bodyLarge),
-                const SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: onPogledajSve,
-                  child: const Text('Pogledaj sve'),
-                ),
-              ],
-            ),
+        return DataCard(
+          title: municipalityName,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Registrovano: ${row.totalRegistered}', style: theme.bodyLarge),
+              Text('Aktivno: ${row.totalActive}', style: theme.bodyLarge),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: onPogledajSve,
+                child: const Text('Pogledaj sve'),
+              ),
+            ],
           ),
         );
       },

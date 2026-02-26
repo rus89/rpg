@@ -34,3 +34,9 @@ description: They use it to remember the most important elements about the proje
 
 - **storage_web.dart**: Resolve worker and wasm URIs from `Uri.base` (base.resolve('sqlite3.wasm'), base.resolve('drift_worker.js')) so they load correctly regardless of document URL or deployment path. If web still fails, next suspects: CORS when fetching CSV from data.gov.rs (browser blocks cross-origin); then check browser console for worker/wasm load errors.
 
+## 2026-02-26 — F6: UI design (theme + reusable widgets)
+
+- **Reusable widgets**: `lib/widgets/data_card.dart` (DataCard with optional title/subtitle, 16px padding), `lib/widgets/section_header.dart` (SectionHeader with 8px bottom spacing). Home, Detail, and About refactored to use them for consistent data blocks and section titles.
+- **Theme**: Added `listTileTheme` (contentPadding 16/8, shape rounded) to `appTheme` and `appDarkTheme` in `lib/app/theme.dart` for Map screen list tiles.
+- **Screens**: Home (_NationalSummary, _TopMunicipalities, _QuickView) and Detail totals block use DataCard; About uses SectionHeader for "Izvor podataka" and "Napomena". No new features; layout and semantics unchanged for tests.
+
