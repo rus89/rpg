@@ -1,0 +1,57 @@
+---
+description: Rules for implementing Figma designs in this Flutter app. Covers theme tokens, component locations, styling conventions, and the required Figma-to-code workflow.
+globs: "lib/**/*.dart"
+alwaysApply: false
+---
+
+# Figma design system rules (RPG Flutter app)
+
+## Token definitions
+
+- **Colors and typography**: Defined in `lib/app/theme.dart` only. No separate tokens file.
+- **Light theme**: `appTheme` — primary green `#43A047`, surface `#FAFAFA`, white cards, `ColorScheme` + `TextTheme` (M3 scale).
+- **Dark theme**: `appDarkTheme` — primary `#81C784`, surface `#1C1B1F`.
+- **IMPORTANT**: Never hardcode colors or font sizes in screens/widgets. Use `Theme.of(context).colorScheme` and `Theme.of(context).textTheme` (e.g. `colorScheme.primary`, `textTheme.titleLarge`, `textTheme.bodyMedium`).
+- **Spacing**: Use multiples of 8: 8, 16, 24, 32. Screen padding 16 (mobile) or 24 (wide); section gaps 16–24.
+
+## Component organization
+
+- **Reusable UI widgets**: `lib/widgets/` — e.g. `DataCard`, `SectionHeader`. Place new shared UI components here.
+- **Screens**: `lib/screens/` — one file per screen; use widgets from `lib/widgets/` and theme.
+- **App shell**: `lib/app/` — `theme.dart`, `router.dart`, `main.dart`.
+
+## Styling approach
+
+- Material 3 via `ThemeData` (useMaterial3: true). No custom CSS or external styling libs.
+- **Cards**: Use `Card` with app `cardTheme` (12px radius, white fill, subtle border). For data blocks use `DataCard` from `lib/widgets/data_card.dart` (title, subtitle, leading icon, child).
+- **Section titles**: Use `SectionHeader` from `lib/widgets/section_header.dart` or `DataCard` title with `textTheme.titleLarge` + `fontWeight.w600` + `colorScheme.primary`.
+- **Responsive**: Use `LayoutBuilder` and a breakpoint (e.g. `constraints.maxWidth > 600`) for padding/maxWidth; keep one layout tree, no separate mobile/desktop screens.
+
+## Figma MCP integration (required flow)
+
+1. Run `get_design_context` for the exact node(s).
+2. If response is truncated, run `get_metadata` then re-fetch with `get_design_context`.
+3. Run `get_screenshot` for visual reference.
+4. After you have design context and screenshot, download any assets and implement.
+5. Translate Figma output (often React + Tailwind) into Flutter: use this app’s `ThemeData`, `DataCard`, `SectionHeader`, and semantic text styles. No Tailwind; use `Theme.of(context)` and widget composition.
+6. Validate layout and hierarchy against the Figma screenshot before marking complete.
+
+## Implementation rules
+
+- Treat Figma MCP output as design and behavior reference, not as Flutter code.
+- Reuse `DataCard`, `SectionHeader`, and theme text styles instead of duplicating.
+- Use `colorScheme.primary` for primary actions, app bar emphasis, section titles, and icons in data blocks.
+- Use `colorScheme.surface`, `colorScheme.onSurface`, `colorScheme.outlineVariant` for backgrounds and borders.
+- Icons: Material `Icons` only (e.g. `Icons.agriculture`, `Icons.leaderboard`, `Icons.location_city`). Do not add new icon packages; map Figma icons to Material equivalents where possible.
+
+## Asset handling
+
+- If Figma MCP returns a localhost URL for an image or SVG, use that source for reference; store app assets under `assets/` if needed.
+- Do not add placeholder images when a design asset is provided.
+
+## Project-specific conventions
+
+- **Language**: UI strings in Serbian Latin only.
+- **Navigation**: GoRouter; bottom nav (Pregled, Mapa, O aplikaciji); detail via `/municipality?name=&snapshotId=`.
+- **Data**: Riverpod providers; screens use `ref.watch(...)` and `AsyncValue.when(loading, error, data)`.
+- **Accessibility**: Use semantic widgets; support text scaling and focusable controls (dropdowns, buttons, list tiles).
