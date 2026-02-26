@@ -1,6 +1,7 @@
 // ABOUTME: Home screen: national summary, top 5 municipalities, municipality dropdown, quick view, "Pogledaj sve".
 // ABOUTME: Uses snapshotListProvider, nationalTotalsProvider, topMunicipalitiesProvider, municipalityNamesProvider; responsive layout.
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -147,21 +148,42 @@ class _NationalSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
     return DataCard(
+      key: const Key('hero_national_total'),
       title: 'Nacionalni zbir',
       subtitle: snapshotLabel != null ? 'Od: $snapshotLabel' : null,
+      leading: Icon(Icons.agriculture, color: theme.colorScheme.primary, size: 32),
       child: totalsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Text('Greška: $e', style: theme.bodyMedium),
+        error: (e, _) => Text('Greška: $e', style: theme.textTheme.bodyMedium),
         data: (totals) {
           if (totals == null) return const SizedBox.shrink();
+          final displayStyle = theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: theme.colorScheme.onSurface,
+          );
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Registrovano: ${totals.registered}', style: theme.bodyLarge),
-              Text('Aktivno: ${totals.active}', style: theme.bodyLarge),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text('Registrovano ', style: theme.textTheme.bodyLarge),
+                  Text('${totals.registered}', style: displayStyle),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text('Aktivno ', style: theme.textTheme.bodyLarge),
+                  Text('${totals.active}', style: displayStyle),
+                ],
+              ),
             ],
           );
         },
@@ -177,25 +199,86 @@ class _TopMunicipalities extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
     return topAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Text('Greška: $e', style: theme.bodyMedium),
+      error: (e, _) => Text('Greška: $e', style: theme.textTheme.bodyMedium),
       data: (list) {
         if (list.isEmpty) return const SizedBox.shrink();
+        final maxActive = list.map((r) => r.totalActive).reduce((a, b) => a > b ? a : b);
+        final maxY = (maxActive * 1.15).clamp(1.0, double.infinity);
+        final barGroups = list.asMap().entries.map((e) {
+          final i = e.key;
+          final r = e.value;
+          return BarChartGroupData(
+            x: i,
+            barRods: [
+              BarChartRodData(
+                toY: r.totalActive.toDouble(),
+                color: theme.colorScheme.primary,
+                width: 20,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              ),
+            ],
+            showingTooltipIndicators: [],
+          );
+        }).toList();
         return DataCard(
+          key: const Key('top_five_section'),
           title: 'Top 5 opština po aktivnim',
+          leading: Icon(Icons.leaderboard, color: theme.colorScheme.primary, size: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
-            children: list
-                .map(
-                  (r) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text('${r.municipalityName}: ${r.totalActive} aktivno', style: theme.bodyMedium),
+            children: [
+              SizedBox(
+                height: 180,
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: maxY,
+                    minY: 0,
+                    barGroups: barGroups,
+                    titlesData: FlTitlesData(
+                      show: true,
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            final i = value.toInt();
+                            if (i >= 0 && i < list.length) {
+                              final name = list[i].municipalityName;
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  name.length > 10 ? '${name.substring(0, 8)}.' : name,
+                                  style: theme.textTheme.labelSmall,
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                          reservedSize: 28,
+                        ),
+                      ),
+                      leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    ),
+                    gridData: const FlGridData(show: false),
+                    borderData: FlBorderData(show: false),
                   ),
-                )
-                .toList(),
+                  duration: const Duration(milliseconds: 150),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ...list.map(
+                (r) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text('${r.municipalityName}: ${r.totalActive} aktivno', style: theme.textTheme.bodyMedium),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -216,24 +299,30 @@ class _MunicipalityDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return namesAsync.when(
       loading: () => const SizedBox.shrink(),
       error: (e, st) => const SizedBox.shrink(),
       data: (names) {
         if (names.isEmpty) return const SizedBox.shrink();
-        return DropdownButtonFormField<String>(
-          initialValue: selectedName,
-          decoration: const InputDecoration(labelText: 'Opština'),
-          items: [
-            const DropdownMenuItem<String>(
-              value: null,
-              child: Text('— Izaberi opštinu —'),
-            ),
-            ...names.map(
-              (n) => DropdownMenuItem<String>(value: n, child: Text(n)),
-            ),
-          ],
-          onChanged: onChanged,
+        return DataCard(
+          key: const Key('municipality_dropdown_section'),
+          title: 'Izaberi opštinu',
+          leading: Icon(Icons.location_city, color: theme.colorScheme.primary, size: 28),
+          child: DropdownButtonFormField<String?>(
+            initialValue: selectedName,
+            decoration: const InputDecoration(labelText: 'Opština'),
+            items: [
+              const DropdownMenuItem<String?>(
+                value: null,
+                child: Text('— Izaberi opštinu —'),
+              ),
+              ...names.map(
+                (n) => DropdownMenuItem<String?>(value: n, child: Text(n)),
+              ),
+            ],
+            onChanged: onChanged,
+          ),
         );
       },
     );

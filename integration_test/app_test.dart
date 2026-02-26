@@ -43,9 +43,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Nacionalni zbir'), findsAtLeast(1));
-    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<String?>), findsOneWidget);
 
-    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.tap(find.byType(DropdownButtonFormField<String?>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Barajevo').last);
     await tester.pumpAndSettle();

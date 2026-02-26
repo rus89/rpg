@@ -3,18 +3,21 @@
 
 import 'package:flutter/material.dart';
 
+/// Vibrant medium green for primary accent (M3 dashboard-style); not dark green.
+const Color _primaryGreen = Color(0xFF43A047);
+
 /// Light theme for the RPG app (M3 type scale, custom colors, consistent components).
 ThemeData get appTheme {
   final colorScheme = ColorScheme.fromSeed(
-    seedColor: const Color(0xFF1B5E20),
+    seedColor: _primaryGreen,
     brightness: Brightness.light,
-    primary: const Color(0xFF2E7D32),
+    primary: _primaryGreen,
     onPrimary: Colors.white,
     secondary: const Color(0xFF00695C),
     onSecondary: Colors.white,
-    surface: const Color(0xFFF5F5F5),
+    surface: const Color(0xFFFAFAFA),
     onSurface: const Color(0xFF1C1B1F),
-    surfaceContainerHighest: const Color(0xFFE0E0E0),
+    surfaceContainerHighest: const Color(0xFFE8E8E8),
     error: const Color(0xFFBA1A1A),
     onError: Colors.white,
   );
@@ -42,8 +45,13 @@ ThemeData get appTheme {
     colorScheme: colorScheme,
     textTheme: textTheme,
     cardTheme: CardThemeData(
+      color: Colors.white,
       elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shadowColor: Colors.black12,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
+      ),
       margin: EdgeInsets.zero,
       clipBehavior: Clip.antiAlias,
     ),
