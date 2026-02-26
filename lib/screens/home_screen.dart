@@ -40,34 +40,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: snapshotListAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Greška: $e', style: Theme.of(context).textTheme.bodyLarge),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.invalidate(syncProvider),
-                child: const Text('Pokušaj ponovo'),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Greška: $e',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => ref.invalidate(syncProvider),
+                      child: const Text('Pokušaj ponovo'),
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
         data: (snapshots) {
           if (snapshots.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Nema dostupnih snimaka.',
-                    style: Theme.of(context).textTheme.bodyLarge,
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Nema dostupnih snimaka.',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () => ref.invalidate(syncProvider),
+                          child: const Text('Pokušaj ponovo'),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => ref.invalidate(syncProvider),
-                    child: const Text('Pokušaj ponovo'),
-                  ),
-                ],
+                ),
               ),
             );
           }
@@ -168,8 +189,8 @@ class _NationalSummary extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  colorScheme.primary.withOpacity(0.25),
-                  colorScheme.primary.withOpacity(0),
+                  colorScheme.primary.withValues(alpha: 0.25),
+                  colorScheme.primary.withValues(alpha: 0),
                 ],
               ),
             ),
