@@ -1,6 +1,7 @@
 // ABOUTME: Parses RPG CSV (semicolon-delimited) into snapshot label and opština rows.
-// ABOUTME: Aggregates by opština (NazivOpstineL); sums registered and active per org form.
+// ABOUTME: Aggregates by opština (NazivOpstineL); repairs names where dataset has ? for č, ć, đ.
 
+import 'package:rpg/data/opstina_name_repair.dart';
 import 'package:rpg/data/rpg_models.dart';
 
 /// Result of parsing one CSV: snapshot label and aggregated rows per opština.
@@ -13,7 +14,11 @@ class ParsedRpgCsv {
 /// Parses semicolon-delimited CSV; aggregates by NazivOpstineL into OpstinaRow.
 ParsedRpgCsv parseRpgCsv(String csv, {required String snapshotLabel}) {
   const delimiter = ';';
-  final lines = csv.split(RegExp(r'\r?\n')).where((l) => l.trim().isNotEmpty).toList();
+  final lines = csv
+      .split(RegExp(r'\r?\n'))
+      .map((l) => l.trim())
+      .where((l) => l.isNotEmpty)
+      .toList();
   if (lines.isEmpty) return ParsedRpgCsv(snapshotLabel: snapshotLabel, rows: []);
   final header = lines[0].split(delimiter).map((c) => c.trim()).toList();
   final nameIdx = header.indexOf('NazivOpstineL');
@@ -26,7 +31,8 @@ ParsedRpgCsv parseRpgCsv(String csv, {required String snapshotLabel}) {
   for (var i = 1; i < lines.length; i++) {
     final cols = lines[i].split(delimiter);
     if (cols.length <= nameIdx || cols.length <= registeredIdx || cols.length <= activeIdx) continue;
-    final name = cols[nameIdx].trim();
+    final rawName = cols[nameIdx].trim();
+    final name = repairOpstinaName(rawName);
     final registered = int.tryParse(cols[registeredIdx].trim()) ?? 0;
     final active = int.tryParse(cols[activeIdx].trim()) ?? 0;
     final prev = byOpstina[name];

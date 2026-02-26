@@ -35,4 +35,24 @@ Regija;NazivRegije;SifraOpstine;NazivOpstineL;OrgOblik;NazivOrgOblik;broj gazdin
     expect(cukarica.totalRegistered, 200);
     expect(cukarica.totalActive, 195);
   });
+
+  test('parse repairs corrupted names (? for č, ć, đ) from dataset', () {
+    final lines = sampleCsv
+        .split(RegExp(r'\r?\n'))
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
+    final twoLineCsv = '${lines[0]}\n${lines[1]}';
+    final resultBarajevo = parseRpgCsv(twoLineCsv, snapshotLabel: '31.12.2025');
+    expect(resultBarajevo.rows.length, 1);
+    expect(resultBarajevo.rows.single.opstinaName, 'Barajevo');
+
+    final header = lines[0];
+    final dataRow = '1;SUMADIJA;1;?a?ak;1;Porodicno;500;480';
+    final result = parseRpgCsv('$header\n$dataRow', snapshotLabel: '31.12.2025');
+    expect(result.rows.length, 1);
+    expect(result.rows.single.opstinaName, 'Čačak');
+    expect(result.rows.single.totalRegistered, 500);
+    expect(result.rows.single.totalActive, 480);
+  });
 }

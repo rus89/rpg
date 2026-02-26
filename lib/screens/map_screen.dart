@@ -74,7 +74,7 @@ class MapScreen extends ConsumerWidget {
                   final name = names[index];
                   return ListTile(
                     title: Text(name),
-                    onTap: () => context.go(
+                    onTap: () => context.push(
                       '/opstina?name=${Uri.encodeComponent(name)}&snapshotId=${Uri.encodeComponent(snapshotId!)}',
                     ),
                   );

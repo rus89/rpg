@@ -100,7 +100,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             snapshotId: snapshotId!,
                             opstinaName: _selectedOpstinaName!,
                             onPogledajSve: () {
-                              context.go(
+                              context.push(
                                 '/opstina?name=${Uri.encodeComponent(_selectedOpstinaName!)}&snapshotId=${Uri.encodeComponent(snapshotId)}',
                               );
                             },

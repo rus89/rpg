@@ -1,7 +1,24 @@
 // ABOUTME: Discovers RPG CSV snapshot URLs from data.gov.rs and fetches CSV content.
-// ABOUTME: v1 uses a hardcoded list of known permalink URLs; fetch uses http.get.
+// ABOUTME: v1 uses hardcoded permalink URLs; fetch decodes as UTF-8 with Windows-1250 then Latin-2 fallback for Serbian.
 
+import 'dart:convert';
+
+import 'package:enough_convert/latin.dart';
+import 'package:enough_convert/windows.dart';
 import 'package:http/http.dart' as http;
+
+/// Decodes CSV response bytes. Tries UTF-8 first; on failure uses Windows-1250 (Central European / Serbian), then Latin-2.
+String decodeCsvBody(List<int> bytes) {
+  try {
+    return utf8.decode(bytes);
+  } on FormatException {
+    try {
+      return const Windows1250Codec(allowInvalid: true).decode(bytes);
+    } on FormatException {
+      return const Latin2Codec().decode(bytes);
+    }
+  }
+}
 
 /// A single CSV snapshot: label (e.g. date) and direct download URL.
 class CsvSnapshot {
@@ -47,6 +64,6 @@ class RpgCsvSource implements CsvSource {
     if (response.statusCode != 200) {
       throw Exception('HTTP ${response.statusCode}: $url');
     }
-    return response.body;
+    return decodeCsvBody(response.bodyBytes);
   }
 }
