@@ -30,3 +30,7 @@ description: They use it to remember the most important elements about the proje
 
 - **Branch**: `wip/f4-rename-codebase-to-english`. All code identifiers: `OpstinaRow` → `MunicipalityRow`, `opstinaName` → `municipalityName`, `getOpstina` / `getTopOpstine` / `getOpstinaNames` → `getMunicipality` / `getTopMunicipalities` / `getMunicipalityNames`. Route `/opstina` → `/municipality`. Files: `opstina_detail_screen` → `municipality_detail_screen`, `opstina_name_repair` → `municipality_name_repair`. Storage: Holdings table column `opstina_name` → `municipality_name` with Drift migration (schemaVersion 2, `customStatement` RENAME COLUMN). Serbian kept in UI strings only (e.g. "Opština", "Pregled", "Top 5 opština po aktivnim").
 
+## 2026-02-26 — F5: Web app (storage init)
+
+- **storage_web.dart**: Resolve worker and wasm URIs from `Uri.base` (base.resolve('sqlite3.wasm'), base.resolve('drift_worker.js')) so they load correctly regardless of document URL or deployment path. If web still fails, next suspects: CORS when fetching CSV from data.gov.rs (browser blocks cross-origin); then check browser console for worker/wasm load errors.
+
