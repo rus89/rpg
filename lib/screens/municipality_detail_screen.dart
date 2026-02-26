@@ -9,6 +9,14 @@ import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/providers/data_providers.dart';
 import 'package:rpg/widgets/data_card.dart';
 
+void _goBackOrHome(BuildContext context) {
+  if (context.canPop()) {
+    context.pop();
+  } else {
+    context.go('/');
+  }
+}
+
 class MunicipalityDetailScreen extends ConsumerWidget {
   const MunicipalityDetailScreen({super.key, this.name, this.snapshotId});
 
@@ -19,7 +27,7 @@ class MunicipalityDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (name == null || name!.isEmpty || snapshotId == null || snapshotId!.isEmpty) {
       return Scaffold(
-        appBar: AppBar(leading: BackButton(onPressed: () => context.pop())),
+        appBar: AppBar(leading: BackButton(onPressed: () => _goBackOrHome(context))),
         body: Center(child: Text('Opština nije izabrana.', style: Theme.of(context).textTheme.bodyLarge)),
       );
     }
@@ -29,7 +37,7 @@ class MunicipalityDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(onPressed: () => context.pop()),
+        leading: BackButton(onPressed: () => _goBackOrHome(context)),
         title: Text(name!),
       ),
       body: snapshotListAsync.when(
