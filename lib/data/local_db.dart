@@ -19,18 +19,28 @@ class Snapshots extends Table {
 
 class Holdings extends Table {
   TextColumn get snapshotId => text()();
-  TextColumn get opstinaName => text()();
+  TextColumn get municipalityName => text()();
   IntColumn get registered => integer()();
   IntColumn get active => integer()();
   @override
-  Set<Column> get primaryKey => {snapshotId, opstinaName};
+  Set<Column> get primaryKey => {snapshotId, municipalityName};
 }
 
 @DriftDatabase(tables: [Snapshots, Holdings])
 class RpgDatabase extends _$RpgDatabase {
   RpgDatabase(super.e);
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          if (from < 2) {
+            await migrator.database.customStatement(
+              'ALTER TABLE holdings RENAME COLUMN opstina_name TO municipality_name',
+            );
+          }
+        },
+      );
 }
 
 /// SQLite-backed RpgStorage for mobile. Pass executor from driftDatabase(name: 'rpg.db').
@@ -39,7 +49,7 @@ class SqliteRpgStorage implements RpgStorage {
   final RpgDatabase _db;
 
   @override
-  Future<void> saveSnapshot(RpgSnapshot snapshot, List<OpstinaRow> rows) async {
+  Future<void> saveSnapshot(RpgSnapshot snapshot, List<MunicipalityRow> rows) async {
     await (_db.delete(
       _db.holdings,
     )..where((t) => t.snapshotId.equals(snapshot.id))).go();
@@ -62,7 +72,7 @@ class SqliteRpgStorage implements RpgStorage {
           .insert(
             HoldingsCompanion.insert(
               snapshotId: snapshot.id,
-              opstinaName: row.opstinaName,
+              municipalityName: row.municipalityName,
               registered: row.totalRegistered,
               active: row.totalActive,
             ),
@@ -88,7 +98,7 @@ class SqliteRpgStorage implements RpgStorage {
   }
 
   @override
-  Future<List<OpstinaRow>> getTopOpstine(String snapshotId, int n) async {
+  Future<List<MunicipalityRow>> getTopMunicipalities(String snapshotId, int n) async {
     final rows =
         await (_db.select(_db.holdings)
               ..where((t) => t.snapshotId.equals(snapshotId))
@@ -97,8 +107,8 @@ class SqliteRpgStorage implements RpgStorage {
     return rows
         .take(n)
         .map(
-          (r) => OpstinaRow(
-            opstinaName: r.opstinaName,
+          (r) => MunicipalityRow(
+            municipalityName: r.municipalityName,
             totalRegistered: r.registered,
             totalActive: r.active,
           ),
@@ -107,30 +117,30 @@ class SqliteRpgStorage implements RpgStorage {
   }
 
   @override
-  Future<OpstinaRow?> getOpstina(String snapshotId, String opstinaName) async {
+  Future<MunicipalityRow?> getMunicipality(String snapshotId, String municipalityName) async {
     final row =
         await (_db.select(_db.holdings)..where(
               (t) =>
                   t.snapshotId.equals(snapshotId) &
-                  t.opstinaName.equals(opstinaName),
+                  t.municipalityName.equals(municipalityName),
             ))
             .getSingleOrNull();
     if (row == null) return null;
-    return OpstinaRow(
-      opstinaName: row.opstinaName,
+    return MunicipalityRow(
+      municipalityName: row.municipalityName,
       totalRegistered: row.registered,
       totalActive: row.active,
     );
   }
 
   @override
-  Future<List<String>> getOpstinaNames(String snapshotId) async {
+  Future<List<String>> getMunicipalityNames(String snapshotId) async {
     final rows =
         await (_db.select(_db.holdings)..where(
               (t) => t.snapshotId.equals(snapshotId),
             ))
             .get();
-    final names = rows.map((r) => r.opstinaName).toSet().toList()..sort();
+    final names = rows.map((r) => r.municipalityName).toSet().toList()..sort();
     return names;
   }
 }

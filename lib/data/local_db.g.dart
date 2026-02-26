@@ -325,12 +325,12 @@ class $HoldingsTable extends Holdings with TableInfo<$HoldingsTable, Holding> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _opstinaNameMeta = const VerificationMeta(
-    'opstinaName',
+  static const VerificationMeta _municipalityNameMeta = const VerificationMeta(
+    'municipalityName',
   );
   @override
-  late final GeneratedColumn<String> opstinaName = GeneratedColumn<String>(
-    'opstina_name',
+  late final GeneratedColumn<String> municipalityName = GeneratedColumn<String>(
+    'municipality_name',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -359,7 +359,7 @@ class $HoldingsTable extends Holdings with TableInfo<$HoldingsTable, Holding> {
   @override
   List<GeneratedColumn> get $columns => [
     snapshotId,
-    opstinaName,
+    municipalityName,
     registered,
     active,
   ];
@@ -383,16 +383,16 @@ class $HoldingsTable extends Holdings with TableInfo<$HoldingsTable, Holding> {
     } else if (isInserting) {
       context.missing(_snapshotIdMeta);
     }
-    if (data.containsKey('opstina_name')) {
+    if (data.containsKey('municipality_name')) {
       context.handle(
-        _opstinaNameMeta,
-        opstinaName.isAcceptableOrUnknown(
-          data['opstina_name']!,
-          _opstinaNameMeta,
+        _municipalityNameMeta,
+        municipalityName.isAcceptableOrUnknown(
+          data['municipality_name']!,
+          _municipalityNameMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_opstinaNameMeta);
+      context.missing(_municipalityNameMeta);
     }
     if (data.containsKey('registered')) {
       context.handle(
@@ -414,7 +414,7 @@ class $HoldingsTable extends Holdings with TableInfo<$HoldingsTable, Holding> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {snapshotId, opstinaName};
+  Set<GeneratedColumn> get $primaryKey => {snapshotId, municipalityName};
   @override
   Holding map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -423,9 +423,9 @@ class $HoldingsTable extends Holdings with TableInfo<$HoldingsTable, Holding> {
         DriftSqlType.string,
         data['${effectivePrefix}snapshot_id'],
       )!,
-      opstinaName: attachedDatabase.typeMapping.read(
+      municipalityName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}opstina_name'],
+        data['${effectivePrefix}municipality_name'],
       )!,
       registered: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -446,12 +446,12 @@ class $HoldingsTable extends Holdings with TableInfo<$HoldingsTable, Holding> {
 
 class Holding extends DataClass implements Insertable<Holding> {
   final String snapshotId;
-  final String opstinaName;
+  final String municipalityName;
   final int registered;
   final int active;
   const Holding({
     required this.snapshotId,
-    required this.opstinaName,
+    required this.municipalityName,
     required this.registered,
     required this.active,
   });
@@ -459,7 +459,7 @@ class Holding extends DataClass implements Insertable<Holding> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['snapshot_id'] = Variable<String>(snapshotId);
-    map['opstina_name'] = Variable<String>(opstinaName);
+    map['municipality_name'] = Variable<String>(municipalityName);
     map['registered'] = Variable<int>(registered);
     map['active'] = Variable<int>(active);
     return map;
@@ -468,7 +468,7 @@ class Holding extends DataClass implements Insertable<Holding> {
   HoldingsCompanion toCompanion(bool nullToAbsent) {
     return HoldingsCompanion(
       snapshotId: Value(snapshotId),
-      opstinaName: Value(opstinaName),
+      municipalityName: Value(municipalityName),
       registered: Value(registered),
       active: Value(active),
     );
@@ -481,7 +481,7 @@ class Holding extends DataClass implements Insertable<Holding> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Holding(
       snapshotId: serializer.fromJson<String>(json['snapshotId']),
-      opstinaName: serializer.fromJson<String>(json['opstinaName']),
+      municipalityName: serializer.fromJson<String>(json['municipalityName']),
       registered: serializer.fromJson<int>(json['registered']),
       active: serializer.fromJson<int>(json['active']),
     );
@@ -491,7 +491,7 @@ class Holding extends DataClass implements Insertable<Holding> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'snapshotId': serializer.toJson<String>(snapshotId),
-      'opstinaName': serializer.toJson<String>(opstinaName),
+      'municipalityName': serializer.toJson<String>(municipalityName),
       'registered': serializer.toJson<int>(registered),
       'active': serializer.toJson<int>(active),
     };
@@ -499,12 +499,12 @@ class Holding extends DataClass implements Insertable<Holding> {
 
   Holding copyWith({
     String? snapshotId,
-    String? opstinaName,
+    String? municipalityName,
     int? registered,
     int? active,
   }) => Holding(
     snapshotId: snapshotId ?? this.snapshotId,
-    opstinaName: opstinaName ?? this.opstinaName,
+    municipalityName: municipalityName ?? this.municipalityName,
     registered: registered ?? this.registered,
     active: active ?? this.active,
   );
@@ -513,9 +513,9 @@ class Holding extends DataClass implements Insertable<Holding> {
       snapshotId: data.snapshotId.present
           ? data.snapshotId.value
           : this.snapshotId,
-      opstinaName: data.opstinaName.present
-          ? data.opstinaName.value
-          : this.opstinaName,
+      municipalityName: data.municipalityName.present
+          ? data.municipalityName.value
+          : this.municipalityName,
       registered: data.registered.present
           ? data.registered.value
           : this.registered,
@@ -527,7 +527,7 @@ class Holding extends DataClass implements Insertable<Holding> {
   String toString() {
     return (StringBuffer('Holding(')
           ..write('snapshotId: $snapshotId, ')
-          ..write('opstinaName: $opstinaName, ')
+          ..write('municipalityName: $municipalityName, ')
           ..write('registered: $registered, ')
           ..write('active: $active')
           ..write(')'))
@@ -535,50 +535,51 @@ class Holding extends DataClass implements Insertable<Holding> {
   }
 
   @override
-  int get hashCode => Object.hash(snapshotId, opstinaName, registered, active);
+  int get hashCode =>
+      Object.hash(snapshotId, municipalityName, registered, active);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Holding &&
           other.snapshotId == this.snapshotId &&
-          other.opstinaName == this.opstinaName &&
+          other.municipalityName == this.municipalityName &&
           other.registered == this.registered &&
           other.active == this.active);
 }
 
 class HoldingsCompanion extends UpdateCompanion<Holding> {
   final Value<String> snapshotId;
-  final Value<String> opstinaName;
+  final Value<String> municipalityName;
   final Value<int> registered;
   final Value<int> active;
   final Value<int> rowid;
   const HoldingsCompanion({
     this.snapshotId = const Value.absent(),
-    this.opstinaName = const Value.absent(),
+    this.municipalityName = const Value.absent(),
     this.registered = const Value.absent(),
     this.active = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HoldingsCompanion.insert({
     required String snapshotId,
-    required String opstinaName,
+    required String municipalityName,
     required int registered,
     required int active,
     this.rowid = const Value.absent(),
   }) : snapshotId = Value(snapshotId),
-       opstinaName = Value(opstinaName),
+       municipalityName = Value(municipalityName),
        registered = Value(registered),
        active = Value(active);
   static Insertable<Holding> custom({
     Expression<String>? snapshotId,
-    Expression<String>? opstinaName,
+    Expression<String>? municipalityName,
     Expression<int>? registered,
     Expression<int>? active,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (snapshotId != null) 'snapshot_id': snapshotId,
-      if (opstinaName != null) 'opstina_name': opstinaName,
+      if (municipalityName != null) 'municipality_name': municipalityName,
       if (registered != null) 'registered': registered,
       if (active != null) 'active': active,
       if (rowid != null) 'rowid': rowid,
@@ -587,14 +588,14 @@ class HoldingsCompanion extends UpdateCompanion<Holding> {
 
   HoldingsCompanion copyWith({
     Value<String>? snapshotId,
-    Value<String>? opstinaName,
+    Value<String>? municipalityName,
     Value<int>? registered,
     Value<int>? active,
     Value<int>? rowid,
   }) {
     return HoldingsCompanion(
       snapshotId: snapshotId ?? this.snapshotId,
-      opstinaName: opstinaName ?? this.opstinaName,
+      municipalityName: municipalityName ?? this.municipalityName,
       registered: registered ?? this.registered,
       active: active ?? this.active,
       rowid: rowid ?? this.rowid,
@@ -607,8 +608,8 @@ class HoldingsCompanion extends UpdateCompanion<Holding> {
     if (snapshotId.present) {
       map['snapshot_id'] = Variable<String>(snapshotId.value);
     }
-    if (opstinaName.present) {
-      map['opstina_name'] = Variable<String>(opstinaName.value);
+    if (municipalityName.present) {
+      map['municipality_name'] = Variable<String>(municipalityName.value);
     }
     if (registered.present) {
       map['registered'] = Variable<int>(registered.value);
@@ -626,7 +627,7 @@ class HoldingsCompanion extends UpdateCompanion<Holding> {
   String toString() {
     return (StringBuffer('HoldingsCompanion(')
           ..write('snapshotId: $snapshotId, ')
-          ..write('opstinaName: $opstinaName, ')
+          ..write('municipalityName: $municipalityName, ')
           ..write('registered: $registered, ')
           ..write('active: $active, ')
           ..write('rowid: $rowid')
@@ -825,7 +826,7 @@ typedef $$SnapshotsTableProcessedTableManager =
 typedef $$HoldingsTableCreateCompanionBuilder =
     HoldingsCompanion Function({
       required String snapshotId,
-      required String opstinaName,
+      required String municipalityName,
       required int registered,
       required int active,
       Value<int> rowid,
@@ -833,7 +834,7 @@ typedef $$HoldingsTableCreateCompanionBuilder =
 typedef $$HoldingsTableUpdateCompanionBuilder =
     HoldingsCompanion Function({
       Value<String> snapshotId,
-      Value<String> opstinaName,
+      Value<String> municipalityName,
       Value<int> registered,
       Value<int> active,
       Value<int> rowid,
@@ -853,8 +854,8 @@ class $$HoldingsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get opstinaName => $composableBuilder(
-    column: $table.opstinaName,
+  ColumnFilters<String> get municipalityName => $composableBuilder(
+    column: $table.municipalityName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -883,8 +884,8 @@ class $$HoldingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get opstinaName => $composableBuilder(
-    column: $table.opstinaName,
+  ColumnOrderings<String> get municipalityName => $composableBuilder(
+    column: $table.municipalityName,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -913,8 +914,8 @@ class $$HoldingsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get opstinaName => $composableBuilder(
-    column: $table.opstinaName,
+  GeneratedColumn<String> get municipalityName => $composableBuilder(
+    column: $table.municipalityName,
     builder: (column) => column,
   );
 
@@ -956,13 +957,13 @@ class $$HoldingsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> snapshotId = const Value.absent(),
-                Value<String> opstinaName = const Value.absent(),
+                Value<String> municipalityName = const Value.absent(),
                 Value<int> registered = const Value.absent(),
                 Value<int> active = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HoldingsCompanion(
                 snapshotId: snapshotId,
-                opstinaName: opstinaName,
+                municipalityName: municipalityName,
                 registered: registered,
                 active: active,
                 rowid: rowid,
@@ -970,13 +971,13 @@ class $$HoldingsTableTableManager
           createCompanionCallback:
               ({
                 required String snapshotId,
-                required String opstinaName,
+                required String municipalityName,
                 required int registered,
                 required int active,
                 Value<int> rowid = const Value.absent(),
               }) => HoldingsCompanion.insert(
                 snapshotId: snapshotId,
-                opstinaName: opstinaName,
+                municipalityName: municipalityName,
                 registered: registered,
                 active: active,
                 rowid: rowid,

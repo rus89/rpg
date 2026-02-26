@@ -1,4 +1,4 @@
-// ABOUTME: Widget tests for Opština detail screen: totals, snapshot label, overridden provider.
+// ABOUTME: Widget tests for Municipality detail screen: totals, snapshot label, overridden provider.
 // ABOUTME: Overrides repository and sync; expects totals, "as of" label, back button.
 
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rpg/data/repository.dart';
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/providers/data_providers.dart';
-import 'package:rpg/screens/opstina_detail_screen.dart';
+import 'package:rpg/screens/municipality_detail_screen.dart';
 
 import '../fake_storage.dart';
 
@@ -18,7 +18,7 @@ void main() {
     final repo = RpgRepository(fakeStorage);
     await repo.saveSnapshot(
       const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
-      [const OpstinaRow(opstinaName: 'Barajevo', totalRegistered: 100, totalActive: 98)],
+      [const MunicipalityRow(municipalityName: 'Barajevo', totalRegistered: 100, totalActive: 98)],
     );
 
     await tester.pumpWidget(
@@ -28,7 +28,7 @@ void main() {
           syncProvider.overrideWith((ref) => Future.value()),
         ],
         child: MaterialApp(
-          home: OpstinaDetailScreen(name: 'Barajevo', snapshotId: '31.12.2025'),
+          home: MunicipalityDetailScreen(name: 'Barajevo', snapshotId: '31.12.2025'),
         ),
       ),
     );
@@ -45,7 +45,7 @@ void main() {
     final repo = RpgRepository(fakeStorage);
     await repo.saveSnapshot(
       const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
-      [const OpstinaRow(opstinaName: 'Cukarica', totalRegistered: 200, totalActive: 195)],
+      [const MunicipalityRow(municipalityName: 'Cukarica', totalRegistered: 200, totalActive: 195)],
     );
 
     await tester.pumpWidget(
@@ -55,7 +55,7 @@ void main() {
           syncProvider.overrideWith((ref) => Future.value()),
         ],
         child: MaterialApp(
-          home: OpstinaDetailScreen(name: 'Cukarica', snapshotId: '31.12.2025'),
+          home: MunicipalityDetailScreen(name: 'Cukarica', snapshotId: '31.12.2025'),
         ),
       ),
     );

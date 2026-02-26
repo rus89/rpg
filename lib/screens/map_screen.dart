@@ -1,5 +1,5 @@
-// ABOUTME: Map screen: tappable list of opštine; tap → Detail with name + snapshotId.
-// ABOUTME: Geography: list of names from RPG data (no GeoJSON/coordinates in v1); for visual map add flutter_map + opština boundaries/coordinates later.
+// ABOUTME: Map screen: tappable list of municipalities; tap → Detail with name + snapshotId.
+// ABOUTME: Geography: list of names from RPG data (no GeoJSON/coordinates in v1); for visual map add flutter_map + boundaries/coordinates later.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +14,7 @@ class MapScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshotListAsync = ref.watch(snapshotListProvider);
     final snapshotId = _effectiveSnapshotId(ref);
-    final namesAsync = snapshotId != null ? ref.watch(opstinaNamesProvider(snapshotId)) : const AsyncValue.data(<String>[]);
+    final namesAsync = snapshotId != null ? ref.watch(municipalityNamesProvider(snapshotId)) : const AsyncValue.data(<String>[]);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mapa')),
@@ -75,7 +75,7 @@ class MapScreen extends ConsumerWidget {
                   return ListTile(
                     title: Text(name),
                     onTap: () => context.push(
-                      '/opstina?name=${Uri.encodeComponent(name)}&snapshotId=${Uri.encodeComponent(snapshotId!)}',
+                      '/municipality?name=${Uri.encodeComponent(name)}&snapshotId=${Uri.encodeComponent(snapshotId!)}',
                     ),
                   );
                 },

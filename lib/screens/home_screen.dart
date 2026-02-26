@@ -1,5 +1,5 @@
-// ABOUTME: Home screen: national summary, top 5 opštine, opština dropdown, quick view, "Pogledaj sve".
-// ABOUTME: Uses snapshotListProvider, nationalTotalsProvider, topOpstineProvider, opstinaNamesProvider; responsive layout.
+// ABOUTME: Home screen: national summary, top 5 municipalities, municipality dropdown, quick view, "Pogledaj sve".
+// ABOUTME: Uses snapshotListProvider, nationalTotalsProvider, topMunicipalitiesProvider, municipalityNamesProvider; responsive layout.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +16,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  String? _selectedOpstinaName;
+  String? _selectedMunicipalityName;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ? ref.watch(nationalTotalsProvider(snapshotId))
         : const AsyncValue.data(null);
     final topAsync = snapshotId != null
-        ? ref.watch(topOpstineProvider((snapshotId: snapshotId, n: 5)))
-        : const AsyncValue.data(<OpstinaRow>[]);
+        ? ref.watch(topMunicipalitiesProvider((snapshotId: snapshotId, n: 5)))
+        : const AsyncValue.data(<MunicipalityRow>[]);
     final namesAsync = snapshotId != null
-        ? ref.watch(opstinaNamesProvider(snapshotId))
+        ? ref.watch(municipalityNamesProvider(snapshotId))
         : const AsyncValue.data(<String>[]);
 
     return Scaffold(
@@ -86,22 +86,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           snapshotLabel: snapshotLabel,
                         ),
                         const SizedBox(height: 24),
-                        _TopOpstine(topAsync: topAsync),
+                        _TopMunicipalities(topAsync: topAsync),
                         const SizedBox(height: 24),
-                        _OpstinaDropdown(
+                        _MunicipalityDropdown(
                           namesAsync: namesAsync,
-                          selectedName: _selectedOpstinaName,
+                          selectedName: _selectedMunicipalityName,
                           onChanged: (name) =>
-                              setState(() => _selectedOpstinaName = name),
+                              setState(() => _selectedMunicipalityName = name),
                         ),
-                        if (_selectedOpstinaName != null) ...[
+                        if (_selectedMunicipalityName != null) ...[
                           const SizedBox(height: 16),
                           _QuickView(
                             snapshotId: snapshotId!,
-                            opstinaName: _selectedOpstinaName!,
+                            municipalityName: _selectedMunicipalityName!,
                             onPogledajSve: () {
                               context.push(
-                                '/opstina?name=${Uri.encodeComponent(_selectedOpstinaName!)}&snapshotId=${Uri.encodeComponent(snapshotId)}',
+                                '/municipality?name=${Uri.encodeComponent(_selectedMunicipalityName!)}&snapshotId=${Uri.encodeComponent(snapshotId)}',
                               );
                             },
                           ),
@@ -184,10 +184,10 @@ class _NationalSummary extends StatelessWidget {
   }
 }
 
-class _TopOpstine extends StatelessWidget {
-  const _TopOpstine({required this.topAsync});
+class _TopMunicipalities extends StatelessWidget {
+  const _TopMunicipalities({required this.topAsync});
 
-  final AsyncValue<List<OpstinaRow>> topAsync;
+  final AsyncValue<List<MunicipalityRow>> topAsync;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +210,7 @@ class _TopOpstine extends StatelessWidget {
                 ...list.map(
                   (r) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text('${r.opstinaName}: ${r.totalActive} aktivno', style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text('${r.municipalityName}: ${r.totalActive} aktivno', style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ),
               ],
@@ -222,8 +222,8 @@ class _TopOpstine extends StatelessWidget {
   }
 }
 
-class _OpstinaDropdown extends StatelessWidget {
-  const _OpstinaDropdown({
+class _MunicipalityDropdown extends StatelessWidget {
+  const _MunicipalityDropdown({
     required this.namesAsync,
     required this.selectedName,
     required this.onChanged,
@@ -262,18 +262,18 @@ class _OpstinaDropdown extends StatelessWidget {
 class _QuickView extends ConsumerWidget {
   const _QuickView({
     required this.snapshotId,
-    required this.opstinaName,
+    required this.municipalityName,
     required this.onPogledajSve,
   });
 
   final String snapshotId;
-  final String opstinaName;
+  final String municipalityName;
   final VoidCallback onPogledajSve;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(
-      opstinaDetailProvider((snapshotId: snapshotId, opstinaName: opstinaName)),
+      municipalityDetailProvider((snapshotId: snapshotId, municipalityName: municipalityName)),
     );
     return detailAsync.when(
       loading: () => const Card(
@@ -297,7 +297,7 @@ class _QuickView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  opstinaName,
+                  municipalityName,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),

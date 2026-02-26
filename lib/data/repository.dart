@@ -9,7 +9,7 @@ class RpgRepository {
   RpgRepository(this._storage);
   final RpgStorage _storage;
 
-  Future<void> saveSnapshot(RpgSnapshot snapshot, List<OpstinaRow> rows) =>
+  Future<void> saveSnapshot(RpgSnapshot snapshot, List<MunicipalityRow> rows) =>
       _storage.saveSnapshot(snapshot, rows);
 
   Future<List<RpgSnapshot>> getSnapshotList() => _storage.getSnapshotList();
@@ -17,12 +17,12 @@ class RpgRepository {
   Future<NationalTotals?> getNationalTotals(String snapshotId) =>
       _storage.getNationalTotals(snapshotId);
 
-  Future<List<OpstinaRow>> getTopOpstine(String snapshotId, int n) =>
-      _storage.getTopOpstine(snapshotId, n);
+  Future<List<MunicipalityRow>> getTopMunicipalities(String snapshotId, int n) =>
+      _storage.getTopMunicipalities(snapshotId, n);
 
-  Future<OpstinaRow?> getOpstina(String snapshotId, String opstinaName) =>
-      _storage.getOpstina(snapshotId, opstinaName);
+  Future<MunicipalityRow?> getMunicipality(String snapshotId, String municipalityName) =>
+      _storage.getMunicipality(snapshotId, municipalityName);
 
-  Future<List<String>> getOpstinaNames(String snapshotId) =>
-      _storage.getOpstinaNames(snapshotId);
+  Future<List<String>> getMunicipalityNames(String snapshotId) =>
+      _storage.getMunicipalityNames(snapshotId);
 }

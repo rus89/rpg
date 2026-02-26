@@ -1,5 +1,5 @@
-// ABOUTME: Opština detail screen: totals, "as of" snapshot label, snapshot switcher, back button.
-// ABOUTME: Reads name and snapshotId from route; uses opstinaDetailProvider and snapshotListProvider.
+// ABOUTME: Municipality detail screen: totals, "as of" snapshot label, snapshot switcher, back button.
+// ABOUTME: Reads name and snapshotId from route; uses municipalityDetailProvider and snapshotListProvider.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +8,8 @@ import 'package:go_router/go_router.dart';
 import 'package:rpg/data/rpg_models.dart';
 import 'package:rpg/providers/data_providers.dart';
 
-class OpstinaDetailScreen extends ConsumerWidget {
-  const OpstinaDetailScreen({super.key, this.name, this.snapshotId});
+class MunicipalityDetailScreen extends ConsumerWidget {
+  const MunicipalityDetailScreen({super.key, this.name, this.snapshotId});
 
   final String? name;
   final String? snapshotId;
@@ -23,7 +23,7 @@ class OpstinaDetailScreen extends ConsumerWidget {
       );
     }
 
-    final detailAsync = ref.watch(opstinaDetailProvider((snapshotId: snapshotId!, opstinaName: name!)));
+    final detailAsync = ref.watch(municipalityDetailProvider((snapshotId: snapshotId!, municipalityName: name!)));
     final snapshotListAsync = ref.watch(snapshotListProvider);
 
     return Scaffold(
@@ -52,7 +52,7 @@ class OpstinaDetailScreen extends ConsumerWidget {
                       _SnapshotSwitcher(
                         snapshots: snapshots,
                         currentId: snapshotId!,
-                        opstinaName: name!,
+                        municipalityName: name!,
                       ),
                       const SizedBox(height: 16),
                     ],
@@ -95,12 +95,12 @@ class _SnapshotSwitcher extends StatelessWidget {
   const _SnapshotSwitcher({
     required this.snapshots,
     required this.currentId,
-    required this.opstinaName,
+    required this.municipalityName,
   });
 
   final List<RpgSnapshot> snapshots;
   final String currentId;
-  final String opstinaName;
+  final String municipalityName;
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,7 @@ class _SnapshotSwitcher extends StatelessWidget {
       items: snapshots.map((s) => DropdownMenuItem(value: s.id, child: Text(s.label))).toList(),
       onChanged: (id) {
         if (id != null) {
-          context.go('/opstina?name=${Uri.encodeComponent(opstinaName)}&snapshotId=${Uri.encodeComponent(id)}');
+          context.go('/municipality?name=${Uri.encodeComponent(municipalityName)}&snapshotId=${Uri.encodeComponent(id)}');
         }
       },
     );

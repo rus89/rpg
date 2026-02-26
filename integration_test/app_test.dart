@@ -1,4 +1,4 @@
-// ABOUTME: Integration test: happy path Home → select opština → "Pogledaj sve" → Detail.
+// ABOUTME: Integration test: happy path Home → select municipality → "Pogledaj sve" → Detail.
 // ABOUTME: Uses overridden repository and sync so the test is deterministic (no network).
 
 import 'package:flutter/material.dart';
@@ -9,20 +9,21 @@ import 'package:rpg/app/router.dart';
 import 'package:rpg/app/theme.dart';
 import 'package:rpg/data/repository.dart';
 import 'package:rpg/data/rpg_models.dart';
-import 'package:rpg/data/storage.dart';
 import 'package:rpg/providers/data_providers.dart';
+
+import '../test/fake_storage.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Home → dropdown → select opština → Pogledaj sve → Detail', (WidgetTester tester) async {
-    final fakeStorage = _FakeRpgStorage();
+  testWidgets('Home → dropdown → select municipality → Pogledaj sve → Detail', (WidgetTester tester) async {
+    final fakeStorage = FakeRpgStorage();
     final repo = RpgRepository(fakeStorage);
     await repo.saveSnapshot(
       const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
       [
-        const OpstinaRow(opstinaName: 'Barajevo', totalRegistered: 100, totalActive: 98),
-        const OpstinaRow(opstinaName: 'Cukarica', totalRegistered: 200, totalActive: 195),
+        const MunicipalityRow(municipalityName: 'Barajevo', totalRegistered: 100, totalActive: 98),
+        const MunicipalityRow(municipalityName: 'Cukarica', totalRegistered: 200, totalActive: 195),
       ],
     );
 
@@ -56,54 +57,4 @@ void main() {
     expect(find.textContaining('Barajevo'), findsAtLeast(1));
     expect(find.byType(BackButton), findsOneWidget);
   });
-}
-
-class _FakeRpgStorage implements RpgStorage {
-  final Map<String, RpgSnapshot> _snapshots = {};
-  final Map<String, List<OpstinaRow>> _rows = {};
-
-  @override
-  Future<void> saveSnapshot(RpgSnapshot snapshot, List<OpstinaRow> rows) async {
-    _snapshots[snapshot.id] = snapshot;
-    _rows[snapshot.id] = List.from(rows);
-  }
-
-  @override
-  Future<List<RpgSnapshot>> getSnapshotList() async => _snapshots.values.toList();
-
-  @override
-  Future<NationalTotals?> getNationalTotals(String snapshotId) async {
-    final rows = _rows[snapshotId];
-    if (rows == null || rows.isEmpty) return null;
-    return NationalTotals(
-      registered: rows.fold<int>(0, (s, r) => s + r.totalRegistered),
-      active: rows.fold<int>(0, (s, r) => s + r.totalActive),
-    );
-  }
-
-  @override
-  Future<List<OpstinaRow>> getTopOpstine(String snapshotId, int n) async {
-    final rows = _rows[snapshotId];
-    if (rows == null) return [];
-    final sorted = List<OpstinaRow>.from(rows)..sort((a, b) => b.totalActive.compareTo(a.totalActive));
-    return sorted.take(n).toList();
-  }
-
-  @override
-  Future<OpstinaRow?> getOpstina(String snapshotId, String opstinaName) async {
-    final rows = _rows[snapshotId];
-    if (rows == null) return null;
-    try {
-      return rows.firstWhere((r) => r.opstinaName == opstinaName);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
-  Future<List<String>> getOpstinaNames(String snapshotId) async {
-    final rows = _rows[snapshotId];
-    if (rows == null) return [];
-    return rows.map((r) => r.opstinaName).toSet().toList()..sort();
-  }
 }

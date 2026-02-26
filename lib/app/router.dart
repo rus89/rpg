@@ -1,4 +1,4 @@
-// ABOUTME: GoRouter config: Home, Map, Detail (/opstina?name=&snapshotId=), About; shell with bottom nav.
+// ABOUTME: GoRouter config: Home, Map, Detail (/municipality?name=&snapshotId=), About; shell with bottom nav.
 // ABOUTME: Shell with bottom nav; same Detail screen from Home and Map.
 
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rpg/screens/about_screen.dart';
 import 'package:rpg/screens/home_screen.dart';
 import 'package:rpg/screens/map_screen.dart';
-import 'package:rpg/screens/opstina_detail_screen.dart';
+import 'package:rpg/screens/municipality_detail_screen.dart';
 
 final goRouter = GoRouter(
   initialLocation: '/',
@@ -53,8 +53,8 @@ final goRouter = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/opstina',
-      builder: (context, state) => OpstinaDetailScreen(
+      path: '/municipality',
+      builder: (context, state) => MunicipalityDetailScreen(
         name: state.uri.queryParameters['name'],
         snapshotId: state.uri.queryParameters['snapshotId'],
       ),

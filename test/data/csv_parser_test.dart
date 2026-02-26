@@ -1,4 +1,4 @@
-// ABOUTME: Tests for parsing RPG CSV into domain models (semicolon, aggregate by opština).
+// ABOUTME: Tests for parsing RPG CSV into domain models (semicolon, aggregate by municipality).
 // ABOUTME: Uses inline sample CSV matching data.gov.rs column structure.
 
 import 'package:flutter_test/flutter_test.dart';
@@ -12,14 +12,14 @@ Regija;NazivRegije;SifraOpstine;NazivOpstineL;OrgOblik;NazivOrgOblik;broj gazdin
 1;GRAD BEOGRAD;11;Cukarica;1;Porodicno;200;195
 ''';
 
-  test('parse returns two opštine when one has two org-form rows', () {
+  test('parse returns two municipalities when one has two org-form rows', () {
     final result = parseRpgCsv(sampleCsv, snapshotLabel: '31.12.2025');
     expect(result.rows.length, 2);
   });
 
   test('parse aggregates Barajevo registered and active from two rows', () {
     final result = parseRpgCsv(sampleCsv, snapshotLabel: '31.12.2025');
-    final barajevo = result.rows.where((r) => r.opstinaName == 'Barajevo').single;
+    final barajevo = result.rows.where((r) => r.municipalityName == 'Barajevo').single;
     expect(barajevo.totalRegistered, 105);
     expect(barajevo.totalActive, 103);
   });
@@ -31,7 +31,7 @@ Regija;NazivRegije;SifraOpstine;NazivOpstineL;OrgOblik;NazivOrgOblik;broj gazdin
 
   test('parse Cukarica single row', () {
     final result = parseRpgCsv(sampleCsv, snapshotLabel: '31.12.2025');
-    final cukarica = result.rows.where((r) => r.opstinaName == 'Cukarica').single;
+    final cukarica = result.rows.where((r) => r.municipalityName == 'Cukarica').single;
     expect(cukarica.totalRegistered, 200);
     expect(cukarica.totalActive, 195);
   });
@@ -45,13 +45,13 @@ Regija;NazivRegije;SifraOpstine;NazivOpstineL;OrgOblik;NazivOrgOblik;broj gazdin
     final twoLineCsv = '${lines[0]}\n${lines[1]}';
     final resultBarajevo = parseRpgCsv(twoLineCsv, snapshotLabel: '31.12.2025');
     expect(resultBarajevo.rows.length, 1);
-    expect(resultBarajevo.rows.single.opstinaName, 'Barajevo');
+    expect(resultBarajevo.rows.single.municipalityName, 'Barajevo');
 
     final header = lines[0];
     final dataRow = '1;SUMADIJA;1;?a?ak;1;Porodicno;500;480';
     final result = parseRpgCsv('$header\n$dataRow', snapshotLabel: '31.12.2025');
     expect(result.rows.length, 1);
-    expect(result.rows.single.opstinaName, 'Čačak');
+    expect(result.rows.single.municipalityName, 'Čačak');
     expect(result.rows.single.totalRegistered, 500);
     expect(result.rows.single.totalActive, 480);
   });

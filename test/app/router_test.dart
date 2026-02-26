@@ -75,7 +75,7 @@ void main() {
     final repo = RpgRepository(fakeStorage);
     await repo.saveSnapshot(
       const RpgSnapshot(id: '31.12.2025', label: '31.12.2025'),
-      [const OpstinaRow(opstinaName: 'Barajevo', totalRegistered: 100, totalActive: 98)],
+      [const MunicipalityRow(municipalityName: 'Barajevo', totalRegistered: 100, totalActive: 98)],
     );
 
     await tester.pumpWidget(
@@ -92,7 +92,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final context = tester.element(find.byType(Scaffold).first);
-    unawaited(context.push('/opstina?name=Barajevo&snapshotId=31.12.2025'));
+    unawaited(context.push('/municipality?name=Barajevo&snapshotId=31.12.2025'));
     final detailShown = await pumpUntilFound(tester, find.byType(BackButton));
     expect(detailShown, isTrue, reason: 'Detail screen with BackButton should appear after push');
     expect(find.byType(BackButton), findsOneWidget);

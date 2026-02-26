@@ -33,24 +33,24 @@ final nationalTotalsProvider = FutureProvider.autoDispose.family<NationalTotals?
   },
 );
 
-final topOpstineProvider = FutureProvider.autoDispose.family<List<OpstinaRow>, ({String snapshotId, int n})>(
+final topMunicipalitiesProvider = FutureProvider.autoDispose.family<List<MunicipalityRow>, ({String snapshotId, int n})>(
   (ref, params) async {
     await ref.watch(syncProvider.future);
-    return ref.read(repositoryProvider).getTopOpstine(params.snapshotId, params.n);
+    return ref.read(repositoryProvider).getTopMunicipalities(params.snapshotId, params.n);
   },
 );
 
-final opstinaDetailProvider = FutureProvider.autoDispose.family<OpstinaRow?, ({String snapshotId, String opstinaName})>(
+final municipalityDetailProvider = FutureProvider.autoDispose.family<MunicipalityRow?, ({String snapshotId, String municipalityName})>(
   (ref, params) async {
     await ref.watch(syncProvider.future);
-    return ref.read(repositoryProvider).getOpstina(params.snapshotId, params.opstinaName);
+    return ref.read(repositoryProvider).getMunicipality(params.snapshotId, params.municipalityName);
   },
 );
 
-/// List of opština names for the selected snapshot (for dropdown).
-final opstinaNamesProvider = FutureProvider.autoDispose.family<List<String>, String>(
+/// List of municipality names for the selected snapshot (for dropdown).
+final municipalityNamesProvider = FutureProvider.autoDispose.family<List<String>, String>(
   (ref, snapshotId) async {
     await ref.watch(syncProvider.future);
-    return ref.read(repositoryProvider).getOpstinaNames(snapshotId);
+    return ref.read(repositoryProvider).getMunicipalityNames(snapshotId);
   },
 );
