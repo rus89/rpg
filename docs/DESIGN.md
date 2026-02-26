@@ -111,21 +111,33 @@ Ship the same Flutter app as a **mobile** build (iOS/Android) and a **web** buil
 ## 6. Visual design
 
 **Base**  
-Material 3 (Material Design 3) with **system fonts** (no custom font assets). The app should not look like the default Flutter theme; we want a **custom** look that still follows M3 patterns.
+Material 3 with **system fonts**. Default to a **light** theme so the app feels open and readable; dark theme optional. Use a **vibrant medium green** as the primary accent (not a dark green); reference: polished M3/dashboard-style Figma kits.
 
-**Inspiration**  
-Community Material 3 designs on Figma (e.g. polished M3 kits, dashboard/data-style templates): clear hierarchy, readable typography, intentional color and elevation, consistent spacing. Goal: professional, trustworthy, “data app” feel — suitable for citizens, researchers, and officials.
+**Color and surfaces**  
+- **Background**: Light (white or off-white); generous spacing (e.g. 16/24 px padding).
+- **Accent**: Vibrant medium green for primary actions, app bar, selected state, and key section titles. Green is used **inside** cards (headers, buttons, icons), not as the card fill.
+- **Cards**: White (or light surface variant), rounded corners, light elevation or subtle border so they sit clearly above the background. Section headers or key elements inside cards can use the accent green.
 
-**What we customize**  
-- **Color scheme**: Primary, secondary, surface, and semantic colors (e.g. for cards, app bar, buttons) chosen for contrast and readability; optional dark theme.
-- **Typography**: Use M3 type scale (display, headline, title, body, label) via `ThemeData.textTheme`; ensure body text is readable and headings are distinct.
-- **Components**: Card elevation/shape, button style, input fields (e.g. dropdown), so all screens feel part of one system.
-- **Spacing and density**: Consistent padding and gaps (e.g. 8/16/24) so layout doesn’t feel cramped or scattered.
+**Typography**  
+- **Strong hierarchy**: Section titles are clearly larger and bolder (e.g. headlineSmall or titleLarge); body text smaller and regular weight; labels distinct. Section titles (e.g. "Nacionalni zbir", "Top 5 opština") may use the accent green.
+- Use M3 type scale via `ThemeData.textTheme`; avoid subtle-only size differences so headings read as headings and body as body.
+
+**Icons**  
+- **Section icons**: Each dashboard block has a small icon (e.g. national summary, top 5 list, opština dropdown) so the home screen reads as a dashboard, not a document. Icons monochromatic (grey or accent green).
+- **Navigation and actions**: Bottom nav and buttons use icons where it helps (already in place for nav); keep consistent.
+
+**National total (hero block)**  
+- The national summary is a **prominent hero block**: large numbers (registered / active), short label, and an icon. It is the visual anchor of the dashboard — one clear "headline" block, not just another card of text.
+
+**Charts where they make sense**  
+- **Top 5 opštine**: A **bar chart** (horizontal or vertical) for the five opštine and their active (or registered) count makes sense and gives a quick visual comparison. Include it on the home dashboard.
+- **National total**: No chart; the hero block with big numbers is enough. Optional later: a tiny "registered vs active" proportion if useful.
+- **Opština detail**: Totals only in v1; no chart. Future iteration: breakdown by organizational form as a chart (see §7).
 
 **Implementation**  
-One app-wide `ThemeData` (and optional `darkTheme`) in `MaterialApp`; screens use semantic styles (e.g. `Theme.of(context).textTheme.titleMedium`) and theme colors instead of hard-coded values. No new screens or flows; same structure, improved look.
+One app-wide `ThemeData` (light default; optional `darkTheme`); screens use semantic text styles and theme colors. Add hero block and section icons to the home screen; add a bar chart for the top 5 list. No new app flows; same structure, clearer hierarchy and dashboard feel.
 
----
+
 
 ## 7. Spec summary and implementation plan scope
 
