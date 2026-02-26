@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:rpg/providers/data_providers.dart';
+import 'package:rpg/widgets/section_header.dart';
 
 class MapScreen extends ConsumerWidget {
   const MapScreen({super.key});
@@ -68,17 +69,29 @@ class MapScreen extends ConsumerWidget {
               if (names.isEmpty) {
                 return Center(child: Text('Nema opština za izabrani snimak.', style: Theme.of(context).textTheme.bodyLarge));
               }
-              return ListView.builder(
-                itemCount: names.length,
-                itemBuilder: (context, index) {
-                  final name = names[index];
-                  return ListTile(
-                    title: Text(name),
-                    onTap: () => context.push(
-                      '/municipality?name=${Uri.encodeComponent(name)}&snapshotId=${Uri.encodeComponent(snapshotId!)}',
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    child: const SectionHeader(title: 'Opštine'),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: names.length,
+                      itemBuilder: (context, index) {
+                        final name = names[index];
+                        return ListTile(
+                          title: Text(name),
+                          onTap: () => context.push(
+                            '/municipality?name=${Uri.encodeComponent(name)}&snapshotId=${Uri.encodeComponent(snapshotId!)}',
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               );
             },
           );
