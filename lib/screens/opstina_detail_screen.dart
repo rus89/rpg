@@ -18,7 +18,7 @@ class OpstinaDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (name == null || name!.isEmpty || snapshotId == null || snapshotId!.isEmpty) {
       return Scaffold(
-        appBar: AppBar(leading: const BackButton()),
+        appBar: AppBar(leading: BackButton(onPressed: () => context.pop())),
         body: Center(child: Text('Opština nije izabrana.', style: Theme.of(context).textTheme.bodyLarge)),
       );
     }
@@ -28,7 +28,7 @@ class OpstinaDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(),
+        leading: BackButton(onPressed: () => context.pop()),
         title: Text(name!),
       ),
       body: snapshotListAsync.when(

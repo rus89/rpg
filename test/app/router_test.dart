@@ -1,6 +1,8 @@
 // ABOUTME: Tests for GoRouter: initial route is Home, navigating to /about shows About.
 // ABOUTME: Uses route config and navigation to verify shell and routes.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,16 +80,19 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     final context = tester.element(find.byType(Scaffold).first);
-    await context.push('/opstina?name=Barajevo&snapshotId=31.12.2025');
-    await tester.pumpAndSettle();
+    unawaited(context.push('/opstina?name=Barajevo&snapshotId=31.12.2025'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(BackButton), findsOneWidget);
 
     await tester.tap(find.byType(BackButton));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Pregled'), findsAtLeast(1));
   });
