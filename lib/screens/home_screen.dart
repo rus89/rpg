@@ -153,48 +153,100 @@ class _NationalSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return DataCard(
+    final colorScheme = theme.colorScheme;
+    return Card(
       key: const Key('hero_national_total'),
-      title: 'Nacionalni zbir',
-      subtitle: snapshotLabel != null ? 'Od: $snapshotLabel' : null,
-      leading: Icon(
-        Icons.agriculture,
-        color: theme.colorScheme.primary,
-        size: 32,
-      ),
-      child: totalsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Text('Greška: $e', style: theme.textTheme.bodyMedium),
-        data: (totals) {
-          if (totals == null) return const SizedBox.shrink();
-          final displayStyle = theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: theme.colorScheme.onSurface,
-          );
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text('Registrovano ', style: theme.textTheme.bodyLarge),
-                  Text('${totals.registered}', style: displayStyle),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            height: 6,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  colorScheme.primary.withOpacity(0.25),
+                  colorScheme.primary.withOpacity(0),
                 ],
               ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text('Aktivno ', style: theme.textTheme.bodyLarge),
-                  Text('${totals.active}', style: displayStyle),
-                ],
-              ),
-            ],
-          );
-        },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.agriculture,
+                      color: colorScheme.primary,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Nacionalni zbir',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.primary,
+                            ),
+                          ),
+                          if (snapshotLabel != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              'Od: $snapshotLabel',
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                totalsAsync.when(
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (e, _) =>
+                      Text('Greška: $e', style: theme.textTheme.bodyMedium),
+                  data: (totals) {
+                    if (totals == null) return const SizedBox.shrink();
+                    final numberStyle = theme.textTheme.displaySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    );
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Registrovano',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        Text('${totals.registered}', style: numberStyle),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Aktivno',
+                          style: theme.textTheme.labelLarge,
+                        ),
+                        Text('${totals.active}', style: numberStyle),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
