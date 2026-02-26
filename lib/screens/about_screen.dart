@@ -2,7 +2,7 @@
 // ABOUTME: Uses url_launcher Link for canonical dataset URL.
 
 import 'package:flutter/material.dart';
-import 'package:rpg/widgets/section_header.dart';
+import 'package:rpg/widgets/data_card.dart';
 import 'package:url_launcher/link.dart';
 
 /// Canonical RPG dataset URL (data.gov.rs).
@@ -19,27 +19,37 @@ class AboutScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SectionHeader(title: 'Izvor podataka'),
-            Text(
-              'Podaci dolaze sa data.gov.rs. Izdavač: Uprava za agrarna plaćanja. Licenca: Javni podaci.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 8),
-            Link(
-              uri: Uri.parse(datasetUrl),
-              builder: (context, followLink) => TextButton(
-                onPressed: followLink,
-                child: const Text('RPG dataset na data.gov.rs'),
+            DataCard(
+              title: 'Izvor podataka',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Podaci dolaze sa data.gov.rs. Izdavač: Uprava za agrarna plaćanja. Licenca: Javni podaci.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Link(
+                    uri: Uri.parse(datasetUrl),
+                    builder: (context, followLink) => TextButton(
+                      onPressed: followLink,
+                      child: const Text('RPG dataset na data.gov.rs'),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),
-            const SectionHeader(title: 'Napomena'),
-            Text(
-              'Ova aplikacija je rad nezavisnog programera koji nije povezan sa vladom niti bilo kojim državnim telom. '
-              'Projekat učenja i zajednice koji koristi otvorene podatke.',
-              style: Theme.of(context).textTheme.bodyMedium,
+            DataCard(
+              title: 'Napomena',
+              child: Text(
+                'Ova aplikacija je rad nezavisnog programera koji nije povezan sa vladom niti bilo kojim državnim telom. '
+                'Projekat učenja i zajednice koji koristi otvorene podatke.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
           ],
         ),
