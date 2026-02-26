@@ -59,12 +59,36 @@ class MunicipalityDetailScreen extends ConsumerWidget {
                     ],
                     DataCard(
                       subtitle: label != null ? 'Od: $label' : null,
+                      leading: Icon(
+                        Icons.agriculture,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 28,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Registrovano: ${row.totalRegistered}', style: Theme.of(context).textTheme.bodyLarge),
-                          Text('Aktivno: ${row.totalActive}', style: Theme.of(context).textTheme.bodyLarge),
+                          Text(
+                            'Registrovano',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          Text(
+                            '${row.totalRegistered}',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Aktivno',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          Text(
+                            '${row.totalActive}',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ],
                       ),
                     ),
