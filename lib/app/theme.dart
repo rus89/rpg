@@ -70,6 +70,14 @@ ThemeData get appTheme {
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 1,
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+      iconTheme: IconThemeData(color: colorScheme.onPrimary),
+      titleTextStyle: textTheme.titleLarge?.copyWith(color: colorScheme.onPrimary),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedItemColor: colorScheme.primary,
+      unselectedItemColor: colorScheme.onSurfaceVariant,
     ),
     listTileTheme: ListTileThemeData(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -146,6 +154,14 @@ ThemeData get appDarkTheme {
       centerTitle: false,
       elevation: 0,
       scrolledUnderElevation: 1,
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+      iconTheme: IconThemeData(color: colorScheme.onPrimary),
+      titleTextStyle: textTheme.titleLarge?.copyWith(color: colorScheme.onPrimary),
+    ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedItemColor: colorScheme.primary,
+      unselectedItemColor: colorScheme.onSurfaceVariant,
     ),
     listTileTheme: ListTileThemeData(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
