@@ -137,7 +137,93 @@ Material 3 with **system fonts**. Default to a **light** theme so the app feels 
 **Implementation**  
 One app-wide `ThemeData` (light default; optional `darkTheme`); screens use semantic text styles and theme colors. Add hero block and section icons to the home screen; add a bar chart for the top 5 list. No new app flows; same structure, clearer hierarchy and dashboard feel.
 
+### 6.1 Visual design: current gaps and recommendations
 
+Analysis of the current UI (theme, Home, Map, Detail, About) against §6 and “polished dashboard” intent — concrete changes that would make the app feel nicer for the end user.
+
+**Hero block (national summary)** — **chosen: full hero treatment**  
+- **Gap**: Same card style as other sections; numbers use `headlineMedium` and sit inline with labels, so the block doesn’t read as the main anchor.  
+- **Decision**: Make it the clear focal point. Use `displaySmall` or `headlineLarge` for the two totals (registered / active), each on its own line with a short label above. Add more vertical padding (e.g. 20–24 px). Add a very subtle primary-tinted top border or soft gradient so it reads as “hero” rather than “first card”.
+
+**App bar** — **chosen: green app bar**  
+- **Gap**: Default M3 app bar (surface, no strong identity).  
+- **Decision**: Use `backgroundColor: colorScheme.primary` and `foregroundColor: colorScheme.onPrimary` app-wide so the app has a clear green identity. Apply in `AppBarTheme` in `lib/app/theme.dart` (and dark theme equivalent).
+
+**Section hierarchy and SectionHeader**  
+- **Gap**: `SectionHeader` uses `titleMedium` only; DESIGN §6 says section titles “may use the accent green”. About screen sections don’t use green.  
+- **Recommendation**: Use `colorScheme.primary` and `titleLarge` (or `headlineSmall`) for `SectionHeader` so “Izvor podataka” / “Napomena” match the dashboard feel. Keep `DataCard` titles in primary as they already are.
+
+**Spacing and rhythm**  
+- **Gap**: 16/24 is good; sections can still feel a bit tight on small screens.  
+- **Recommendation**: Use 24 px between major sections consistently; consider 32 px before “Izaberi opštinu” to separate “dashboard blocks” from “selection”. Max content width (e.g. 800 px) for wide layout is already in place — keep it.
+
+**Top 5 and chart**  
+- **Gap**: Bar chart and list are correct; axis labels truncate long names (e.g. 8 chars + “.”).  
+- **Recommendation**: Keep chart; optionally show full name in a tooltip or in the list below. Ensure chart uses `colorScheme.primary` and that list items use `bodyMedium` so hierarchy is clear.
+
+**Municipality dropdown and quick view**  
+- **Gap**: Dropdown and quick view are clear; quick view is a second card with two lines + button.  
+- **Recommendation**: Optionally use a small location icon or primary-colored “Pogledaj sve” (already an ElevatedButton) so the CTA is obvious. No structural change required.
+
+**Detail screen**  
+- **Gap**: Single card with “Registrovano: X” and “Aktivno: Y” in `bodyLarge` — reads like a form, not a summary.  
+- **Recommendation**: Treat as a small “detail hero”: same numbers in `titleLarge` or `headlineSmall`, one per line with a short label; optional small icon (e.g. agriculture or location_city) in the card header. Snapshot switcher can stay as-is above the card.
+
+**Map screen**  
+- **Gap**: Plain `ListView` of `ListTile`s; no section title or visual tie-in to the rest of the app.  
+- **Recommendation**: Add a short `SectionHeader` (e.g. “Opštine”) or a subdued subtitle (“Izaberi opštinu za pregled”) at the top. Style list tiles to match theme (padding, shape); selectedItemColor for bottom nav if not already set.
+
+**About screen**  
+- **Gap**: Plain text and one link; no cards.  
+- **Recommendation**: Use two `DataCard`s (or Card + padding): one for “Izvor podataka” + link, one for “Napomena” + disclaimer. Same 16 px padding and 12 px radius as rest of app so About feels part of the same system.
+
+**Bottom navigation**  
+- **Gap**: Default M3 bottom nav.  
+- **Recommendation**: Set `selectedItemColor: colorScheme.primary` and `unselectedItemColor: colorScheme.onSurfaceVariant` (or equivalent) so selected tab is clearly green and consistent with the rest of the theme.
+
+**Loading and error states**  
+- **Gap**: Centered text + “Pokušaj ponovo” is correct; can feel stark.  
+- **Recommendation**: Keep text and button; optionally wrap in a Card with padding so the error block has the same visual language as data blocks. No need for illustrations in v1.
+
+**Summary**  
+- **Decided**: Green app bar; hero block with full treatment (bigger numbers, more padding, subtle primary tint).  
+- **Remaining recommendations**: SectionHeader in primary + larger style, detail screen numbers promoted, bottom nav selected color, About in cards, map section title; optional tooltip for top 5, error state in Card.
+
+Figma-to-code rules for this project are in `.cursor/rules/figma-design-system.mdc` so any Figma-driven UI follows the same tokens and components.
+
+### 6.2 Implementation plan (visual design)
+
+Ordered steps to implement §6 and §6.1. Adjust this list as needed before coding.
+
+1. **Theme: app bar**  
+   In `lib/app/theme.dart`, set `AppBarTheme` for light (and dark) theme: `backgroundColor: colorScheme.primary`, `foregroundColor: colorScheme.onPrimary`, `iconTheme: IconTheme(color: colorScheme.onPrimary)`, `titleTextStyle` using `colorScheme.onPrimary`. Ensure all screens use the same app bar (no overrides unless needed for a specific screen).
+
+2. **Theme: bottom navigation**  
+   In `lib/app/theme.dart`, set `BottomNavigationBarThemeData`: `selectedItemColor: colorScheme.primary`, `unselectedItemColor: colorScheme.onSurfaceVariant` (or `onSurface` with reduced opacity).
+
+3. **Theme: SectionHeader**  
+   In `lib/widgets/section_header.dart`, use `colorScheme.primary` and `textTheme.titleLarge` (or `headlineSmall`) for the section title so About and any other screen using `SectionHeader` get the accent and hierarchy.
+
+4. **Home: hero block**  
+   In `lib/screens/home_screen.dart`, refactor `_NationalSummary` (or the `DataCard` that wraps it) so that: (a) the two totals use `displaySmall` or `headlineLarge`, each on its own line with label above; (b) inner padding is 20–24 px; (c) the card has a subtle primary-tinted top border or a very soft primary gradient at the top so it reads as the hero. Keep the existing icon and “Nacionalni zbir” / “Od: …” subtitle.
+
+5. **Detail screen: numbers as summary**  
+   In `lib/screens/municipality_detail_screen.dart`, show “Registrovano” and “Aktivno” with numbers in `titleLarge` or `headlineSmall`, one per line with label above; optionally add a small icon in the card header.
+
+6. **About screen: cards**  
+   In `lib/screens/about_screen.dart`, wrap “Izvor podataka” + link in one `DataCard` (or `Card` with same padding/radius), and “Napomena” + disclaimer in another. Use `SectionHeader` or card title for the two section titles.
+
+7. **Map screen: section title**  
+   In `lib/screens/map_screen.dart`, add a `SectionHeader` (e.g. “Opštine”) or short subtitle at the top of the list. Optionally adjust list tile padding/shape to match theme.
+
+8. **Optional / later**  
+   - Error state: wrap centered error text + “Pokušaj ponovo” in a `Card` with padding on Home/Map where applicable.  
+   - Top 5: tooltip or full municipality name in list (chart labels can stay truncated).  
+   - Quick view: no change unless you want a small icon next to “Pogledaj sve”.
+
+**Dependencies**: (1) and (2) are theme-only. (3) is a single widget. (4)–(7) are screen-level and can be done in any order after theme and SectionHeader; (4) is the most visible. Adjust order or split steps if you prefer (e.g. “hero” in two commits: typography first, then tint/border).
+
+---
 
 ## 7. Spec summary and implementation plan scope
 
